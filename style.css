@@ -1,0 +1,124 @@
+@import url("https://fonts.googleapis.com/css2?family=Monoton&family=MuseoModerno:ital,wght@0,100..900;1,100..900&family=Righteous&display=swap");
+:root {
+  --darkest-purple: #19171c;
+  --dark-purple: #2a2f33;
+  --medium-purple: #332e38;
+  --light-purple: #8a7d98;
+  --lightest-purple: #c6bdcf;
+}
+
+body {
+  font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
+    source-sans-pro, sans-serif;
+  font-weight: normal;
+  background-color: var(--dark-purple);
+  padding: 0;
+  margin: 0;
+}
+
+#site-header {
+  font-family: "MuseoModerno", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 4rem;
+  color: var(--darkest-purple);
+  background-color: #7d7089;
+  padding: 50px;
+  box-shadow: 3px 3px 10px rgb(0, 0, 0);
+}
+
+#main-container {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
+
+#project-panel {
+  color: var(--light-purple);
+  padding: 50px;
+  height: 100vh;
+  background-color: var(--medium-purple);
+}
+
+#task-panel {
+  color: var(--light-purple);
+  padding: 50px;
+  height: 100vh;
+  background-color: hsl(268, 9%, 10%);
+}
+
+#new-project-input {
+  display: flex;
+  justify-content: flex-start;
+}
+
+#new-project-input input[type="text"] {
+  background-color: var(--light-purple);
+  margin-right: 10px;
+  border: none;
+  border-radius: 10px;
+  height: 2rem;
+  width: 70%;
+  padding: 0px 10px 0px 10px;
+  font-size: 1.2rem;
+  margin-bottom: 60px;
+}
+
+::placeholder {
+  color: var(--dark-purple);
+  opacity: 0.8;
+}
+
+#add-project {
+  background-color: var(--light-purple);
+  font-size: 1.5rem;
+  height: 30px;
+  width: 30px;
+  border: none;
+  border-radius: 50%;
+}
+
+#add-project:hover {
+  background-color: #c6bdcf;
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+  border: none;
+  border-radius: 50%;
+}
+
+#project-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+#project-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--light-purple);
+  color: var(--darkest-purple);
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 50px;
+}
+
+#project-item:hover {
+  background-color: var(--lightest-purple);
+  cursor: pointer;
+}
+
+#project-edit,
+#project-delete {
+  padding: 5px 5px;
+  border-radius: 50%;
+}
+
+#project-edit:hover,
+#project-delete:hover {
+  background-color: var(--light-purple);
+}
