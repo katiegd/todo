@@ -3,6 +3,7 @@ const projectPanel = document.querySelector("#project-panel");
 const projectNameInput = document.querySelector("#project-name-input");
 const projectList = document.querySelector("#project-list");
 const deleteProjectBtn = document.querySelector("#project-delete");
+const projectItem = document.createElement("div");
 
 addProjectBtn.addEventListener("click", addProject);
 deleteProjectBtn.addEventListener("click", deleteProject);
@@ -38,8 +39,4 @@ function addProject() {
 
   projectList.appendChild(projectItem);
   projectPanel.appendChild(projectList);
-}
-
-function deleteProject() {
-  projectPanel.removeChild(`${i}`);
 }

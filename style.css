@@ -3,7 +3,7 @@
   --darkest-purple: #19171c;
   --dark-purple: #2a2f33;
   --medium-purple: #332e38;
-  --light-purple: #8a7d98;
+  --light-purple: #ab8fd0;
   --lightest-purple: #c6bdcf;
 }
 
@@ -23,7 +23,7 @@ body {
   font-style: normal;
   font-size: 4rem;
   color: var(--darkest-purple);
-  background-color: #7d7089;
+  background: linear-gradient(95deg, #b166d8, #361b65);
   padding: 50px;
 }
 

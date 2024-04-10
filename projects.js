@@ -56,7 +56,7 @@ class Projects {
     }
 
     function deleteProject() {
-      projectPanel.removeChild(`${i}`);
+      projectPanel.removeChild(projectItem);
     }
   }
 }
