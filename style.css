@@ -25,7 +25,6 @@ body {
   color: var(--darkest-purple);
   background-color: #7d7089;
   padding: 50px;
-  box-shadow: 3px 3px 10px rgb(0, 0, 0);
 }
 
 #main-container {
@@ -48,11 +47,15 @@ body {
 }
 
 #new-project-input {
+  font-weight: normal;
   display: flex;
   justify-content: flex-start;
 }
 
 #new-project-input input[type="text"] {
+  font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
+    source-sans-pro, sans-serif;
+  font-weight: bold;
   background-color: var(--light-purple);
   margin-right: 10px;
   border: none;
@@ -65,8 +68,10 @@ body {
 }
 
 ::placeholder {
+  font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
+    source-sans-pro, sans-serif;
+  font-weight: normal;
   color: var(--dark-purple);
-  opacity: 0.8;
 }
 
 #add-project {
@@ -76,6 +81,7 @@ body {
   width: 30px;
   border: none;
   border-radius: 50%;
+  transition: transform 0.3s ease-in-out;
 }
 
 #add-project:hover {
@@ -85,6 +91,7 @@ body {
   width: 30px;
   border: none;
   border-radius: 50%;
+  transform: rotate(90deg);
 }
 
 #project-list {
