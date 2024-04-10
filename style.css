@@ -23,6 +23,7 @@ body {
   font-style: normal;
   font-size: 4rem;
   color: var(--darkest-purple);
+  text-shadow: 2px 1px 1px var(--lightest-purple);
   background: linear-gradient(95deg, #b166d8, #361b65);
   padding: 50px;
 }
@@ -44,6 +45,11 @@ body {
   padding: 50px;
   height: 100vh;
   background-color: hsl(268, 9%, 10%);
+}
+
+#project-panel h1,
+#task-panel h1 {
+  text-shadow: 2px 2px 1px var(--darkest-purple);
 }
 
 #new-project-input {
