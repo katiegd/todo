@@ -23,22 +23,35 @@
             id="project-name-input"
           /><button id="add-project">+</button>
         </div>
-
-        <div id="project-list">
-          <div id="project-item">
-            <div id="project-item-name">House</div>
+        <div id="main-project-container">
+          <div id="default-project">
+            <div id="project-item-name">Reminders</div>
             <div id="edit-delete">
-              <img id="project-edit" src="./assets/edit.svg" width="25px" /><img
-                id="project-delete"
-                src="./assets/delete.svg"
-                width="25px"
-              />
+              <img id="project-edit" src="./assets/edit.svg" width="25px" />
             </div>
+          </div>
+          <div id="project-list"></div>
+        </div>
+      </div>
+      <div id="task-panel">
+        <div id="tasks-header">
+          <h1>Tasks</h1>
+          <button id="add-task">+</button>
+        </div>
+        <div id="task-list">
+          <div id="task-item">
+            <div id="task-name">Water Plants</div>
+            <div id="task-description">
+              <ul>
+                Water the snake plant and the tomatoes.
+              </ul>
+            </div>
+            <div id="task-due-date">April 24, 2024</div>
+            <div id="task-priority">Low</div>
           </div>
         </div>
       </div>
-      <div id="task-panel"><h1>Tasks</h1></div>
     </div>
-    <script src="index.js" defer></script>
+    <script type="module" src="index.js" defer></script>
   </body>
 </html>

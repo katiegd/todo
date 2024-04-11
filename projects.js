@@ -1,33 +1,38 @@
-class Projects {
+// Create the project item constructor
+export class ProjectItem {
+  constructor(name) {
+    this.name = name;
+  }
+}
+// Create the project list constructor into an array
+export class ProjectList {
   constructor() {
-    this.project = [];
+    this.projects = [];
   }
 
   addProject(name) {
-    let newProject = new Project(name);
-    this.project.push(newProject);
+    let newProject = new ProjectItem(name);
+    this.projects.push(newProject);
+    this.renderHTML();
   }
 
   removeProject(index) {
-    this.project.splice(index, 1);
+    this.projects.splice(index, 1);
+    this.renderHTML();
   }
 
   renderHTML() {
-    const addProjectBtn = document.querySelector("#add-project");
     const projectPanel = document.querySelector("#project-panel");
-    const projectNameInput = document.querySelector("#project-name-input");
     const projectList = document.querySelector("#project-list");
-    const deleteProjectBtn = document.querySelector("#project-delete");
+    projectList.innerHTML = "";
 
-    addProjectBtn.addEventListener("click", addProject);
-    deleteProjectBtn.addEventListener("click", deleteProject);
-
-    function addProject() {
+    this.projects.forEach((project, i) => {
       const projectItem = document.createElement("div");
       projectItem.setAttribute("id", "project-item");
+      projectItem.setAttribute("class", `project-${i}-${project.name}`);
 
       const projectName = document.createElement("div");
-      projectName.textContent = projectNameInput.value;
+      projectName.textContent = project.name;
       projectName.setAttribute("id", "project-item-name");
 
       const projectEditDeleteDiv = document.createElement("div");
@@ -53,10 +58,13 @@ class Projects {
 
       projectList.appendChild(projectItem);
       projectPanel.appendChild(projectList);
-    }
+    });
 
-    function deleteProject() {
-      projectPanel.removeChild(projectItem);
-    }
+    const projectDeleteButtons = document.querySelectorAll("#project-delete");
+    projectDeleteButtons.forEach((button, i) => {
+      button.addEventListener("click", () => {
+        this.removeProject(i);
+      });
+    });
   }
 }

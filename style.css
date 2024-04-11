@@ -25,26 +25,28 @@ body {
   color: var(--darkest-purple);
   text-shadow: 2px 1px 1px var(--lightest-purple);
   background: linear-gradient(95deg, #b166d8, #361b65);
-  padding: 50px;
+  padding: calc(1vh + 20px);
 }
 
 #main-container {
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: minmax(250px, 1fr) 3fr;
 }
 
 #project-panel {
   color: var(--light-purple);
-  padding: 50px;
+  padding: calc(1vh + 20px);
   height: 100vh;
   background-color: var(--medium-purple);
+  overflow: auto;
 }
 
 #task-panel {
   color: var(--light-purple);
-  padding: 50px;
+  padding: calc(1vh + 20px);
   height: 100vh;
   background-color: hsl(268, 9%, 10%);
+  overflow: auto;
 }
 
 #project-panel h1,
@@ -56,9 +58,11 @@ body {
   font-weight: normal;
   display: flex;
   justify-content: flex-start;
+  width: 100%;
 }
 
 #new-project-input input[type="text"] {
+  flex: 1;
   font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
     source-sans-pro, sans-serif;
   font-weight: bold;
@@ -90,16 +94,43 @@ body {
   transition: transform 0.3s ease-in-out;
 }
 
-#add-project:hover {
+#tasks-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#add-task {
+  background-color: var(--light-purple);
+  font-size: 1.5rem;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  border: none;
+  transition: transform 0.3s ease-in-out;
+}
+
+#add-task:hover {
   background-color: #c6bdcf;
   cursor: pointer;
-  height: 30px;
-  width: 30px;
   border: none;
-  border-radius: 50%;
   transform: rotate(90deg);
 }
 
+#add-project:hover {
+  background-color: #c6bdcf;
+  cursor: pointer;
+  border: none;
+  transform: rotate(90deg);
+}
+
+#default-project {
+  margin-bottom: 20px;
+}
+
+#main-project-container,
 #project-list {
   display: flex;
   flex-direction: row;
@@ -107,20 +138,22 @@ body {
   gap: 20px;
 }
 
-#project-item {
+#project-item,
+#default-project {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: var(--light-purple);
   color: var(--darkest-purple);
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 500;
   padding: 10px 20px;
   border-radius: 50px;
 }
 
-#project-item:hover {
+#project-item:hover,
+#default-project:hover {
   background-color: var(--lightest-purple);
   cursor: pointer;
 }
@@ -134,4 +167,27 @@ body {
 #project-edit:hover,
 #project-delete:hover {
   background-color: var(--light-purple);
+}
+
+#task-item {
+  width: 200px;
+  border-radius: 20px;
+  padding: 20px;
+  background-color: var(--medium-purple);
+  box-shadow: -3px 0px 1px var(--light-purple);
+  transition: translate 0.2s ease-in-out;
+}
+
+#task-item:hover {
+  translate: 0px -2px;
+}
+
+#task-name {
+  font-size: large;
+  font-weight: 500;
+}
+
+#task-description {
+  font-size: small;
+  font-weight: 100;
 }
