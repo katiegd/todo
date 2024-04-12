@@ -1,9 +1,12 @@
+import { updateTasksPanel } from "./tasks.js";
+
 // Create the project item constructor
 export class ProjectItem {
   constructor(name) {
     this.name = name;
   }
 }
+
 // Create the project list constructor into an array
 export class ProjectList {
   constructor() {
@@ -30,6 +33,7 @@ export class ProjectList {
       const projectItem = document.createElement("div");
       projectItem.setAttribute("id", "project-item");
       projectItem.setAttribute("class", `project-${i}-${project.name}`);
+      projectItem.dataset.index = i;
 
       const projectName = document.createElement("div");
       projectName.textContent = project.name;
@@ -58,6 +62,14 @@ export class ProjectList {
 
       projectList.appendChild(projectItem);
       projectPanel.appendChild(projectList);
+    });
+
+    const projectItemBtn = document.querySelectorAll("#project-item-name");
+    projectItemBtn.forEach((item) => {
+      item.addEventListener("click", (event) => {
+        const index = event.currentTarget.dataset.index;
+        updateTasksPanel(index);
+      });
     });
 
     const projectDeleteButtons = document.querySelectorAll("#project-delete");

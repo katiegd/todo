@@ -1,20 +1,37 @@
 import { ProjectList } from "./projects.js";
+import { updateTasksPanel } from "./tasks.js";
 
 const mainProjectList = new ProjectList();
 
+const projectNameInput = document.querySelector("#project-name-input");
 const addProjectBtn = document.querySelector("#add-project");
+const addProjectInput = document.querySelector("#project-name-input");
+const projectItemBtn = document.querySelectorAll("#project-item");
+
+function handleEnterKey(event) {
+  if (event.type === "keydown" && event.key === "Enter") {
+    let projectName = projectNameInput.value;
+    if (projectName !== "") {
+      mainProjectList.addProject(projectName);
+      projectNameInput.value = "";
+    }
+  }
+}
+
+addProjectInput.addEventListener("keydown", handleEnterKey);
+
 addProjectBtn.addEventListener("click", () => {
-  const projectNameInput = document.querySelector("#project-name-input");
-  const projectName = projectNameInput.value;
+  let projectName = projectNameInput.value;
   if (projectName !== "") {
     mainProjectList.addProject(projectName);
     projectNameInput.value = "";
   }
 });
 
-const projectButton = document.querySelectorAll("#project-item");
-projectButton.forEach((button, i) => {
-  button.addEventListener(click, showTasks(i));
+projectItemBtn.forEach((button) => {
+  button.addEventListener("click", () => {
+    updateTasksPanel(index);
+  });
 });
 
 mainProjectList.renderHTML();

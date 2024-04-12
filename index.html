@@ -24,7 +24,7 @@
           /><button id="add-project">+</button>
         </div>
         <div id="main-project-container">
-          <div id="default-project">
+          <div id="default-project" data-index="999">
             <div id="project-item-name">Reminders</div>
             <div id="edit-delete">
               <img id="project-edit" src="./assets/edit.svg" width="25px" />
@@ -35,19 +35,31 @@
       </div>
       <div id="task-panel">
         <div id="tasks-header">
-          <h1>Tasks</h1>
+          <h1 class="task-name-h1">Tasks</h1>
           <button id="add-task">+</button>
+        </div>
+        <div id="task-modal" class="modal">
+          <div class="modal-content">
+            <span id="#close">Close</span>
+          </div>
         </div>
         <div id="task-list">
           <div id="task-item">
-            <div id="task-name">Water Plants</div>
-            <div id="task-description">
-              <ul>
-                Water the snake plant and the tomatoes.
-              </ul>
+            <div id="task-details">
+              <div id="task-name">Water Plants</div>
+              <div id="task-description">
+                <ul>
+                  Water the snake plant and the tomatoes.
+                </ul>
+              </div>
+              <div id="task-due-date">Due: April 24, 2024</div>
+              <div id="task-priority">Priority: Low</div>
             </div>
-            <div id="task-due-date">April 24, 2024</div>
-            <div id="task-priority">Low</div>
+            <div id="task-edit-delete">
+              <button id="task-edit-delete-dropdown">
+                &#8226;&#8226;&#8226;
+              </button>
+            </div>
           </div>
         </div>
       </div>
