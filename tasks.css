@@ -25,7 +25,7 @@
   width: 50px;
   border-radius: 50%;
   border: none;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease-out;
 }
 
 #add-task:hover {
@@ -35,67 +35,87 @@
   transform: rotate(90deg);
 }
 
-#task-item {
+.task-item {
   display: grid;
-  grid-template-columns: 1fr 50px;
-  align-items: start;
+  grid-template-columns: 50px 1fr 50px;
+  justify-content: start;
+  align-items: center;
   width: 100%;
   border-radius: 20px 0px 0px 20px;
-  padding: 20px;
+  padding: 10px;
   margin: 0px 0px 15px 0px;
   background-color: var(--medium-purple);
   box-shadow: -3px 0px 1px var(--light-purple);
 }
 
-#task-edit-delete-dropdown {
+.task-edit-delete-dropdown {
   font-size: 1.5rem;
   color: var(--light-purple);
   background-color: var(--medium-purple);
   border: none;
 }
 
-#task-edit-delete-dropdown:hover {
+.task-edit-delete-dropdown:hover {
   color: #fefefe;
+  cursor: pointer;
 }
 
-#task-name {
-  font-size: large;
-  font-weight: 500;
+.task-details {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr;
+  justify-content: start;
+  align-items: center;
 }
 
-#task-description {
+.task-name {
+  font-size: medium;
+  font-weight: 300;
+}
+
+.task-description,
+.task-due-date {
+  font-size: small;
+  font-weight: 100;
+}
+
+.task-priority {
   font-size: small;
   font-weight: 100;
 }
 
 /* The Modal (background) */
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  display: none;
+  position: fixed;
+  z-index: 1;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  backdrop-filter: blur(10px);
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Modal Content/Box */
 .modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  display: grid;
+  grid-template-rows: 50px 1fr;
+  justify-content: center;
+  background-color: var(--medium-purple);
+  margin: 30% auto;
   padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  border: none;
+  width: 60%;
+  border-radius: 20px;
+  box-shadow: 1px 1px 20px #000000;
 }
 
 /* The Close Button */
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
+  text-align: right;
+  color: var(--light-purple);
+  font-size: 1rem;
   font-weight: bold;
 }
 
@@ -104,4 +124,19 @@
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+form {
+  font-size: 1rem;
+  display: grid;
+  gap: 10px;
+}
+
+form button {
+  width: 70px;
+}
+
+.date-priority {
+  display: flex;
+  justify-content: space-between;
 }

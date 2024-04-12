@@ -1,4 +1,6 @@
-import { updateTasksPanel } from "./tasks.js";
+import { TaskList } from "./tasks.js";
+
+const taskListElement = new TaskList();
 
 // Create the project item constructor
 export class ProjectItem {
@@ -22,6 +24,7 @@ export class ProjectList {
   removeProject(index) {
     this.projects.splice(index, 1);
     this.renderHTML();
+    taskListElement.removeProjectTasks();
   }
 
   renderHTML() {
@@ -68,8 +71,7 @@ export class ProjectList {
     projectItemBtn.forEach((item) => {
       item.addEventListener("click", (event) => {
         const index = event.currentTarget.dataset.index;
-        updateTasksPanel(index);
-        console.log("WETWF");
+        taskListElement.updateTasksPanel(index);
       });
     });
 

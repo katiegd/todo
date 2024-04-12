@@ -1,12 +1,12 @@
 import { ProjectList } from "./projects.js";
-import { updateTasksPanel } from "./tasks.js";
+import { TaskList } from "./tasks.js";
 
+const mainTaskList = new TaskList();
 const mainProjectList = new ProjectList();
 
 const projectNameInput = document.querySelector("#project-name-input");
 const addProjectBtn = document.querySelector("#add-project");
 const addProjectInput = document.querySelector("#project-name-input");
-const projectItemBtn = document.querySelector("#project-item");
 
 function handleEnterKey(event) {
   if (event.type === "keydown" && event.key === "Enter") {
@@ -28,10 +28,5 @@ addProjectBtn.addEventListener("click", () => {
   }
 });
 
-// projectItemBtn.forEach((button) => {
-//   button.addEventListener("click", () => {
-//     console.log("WTF");
-//   });
-// });
-
+mainTaskList.renderHTML();
 mainProjectList.renderHTML();
