@@ -19,7 +19,7 @@ window.onclick = function (event) {
 export function updateTasksPanel(index) {
   const tasksHeader = document.querySelector(".task-name-h1");
   const projectName =
-    document.querySelectorAll("#project-item-name")[index].textContent;
+    document.querySelectorAll("#project-item")[index].textContent;
   tasksHeader.textContent = projectName;
 
   console.log(projectName);

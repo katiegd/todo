@@ -6,7 +6,7 @@ const mainProjectList = new ProjectList();
 const projectNameInput = document.querySelector("#project-name-input");
 const addProjectBtn = document.querySelector("#add-project");
 const addProjectInput = document.querySelector("#project-name-input");
-const projectItemBtn = document.querySelectorAll("#project-item");
+const projectItemBtn = document.querySelector("#project-item");
 
 function handleEnterKey(event) {
   if (event.type === "keydown" && event.key === "Enter") {
@@ -28,10 +28,10 @@ addProjectBtn.addEventListener("click", () => {
   }
 });
 
-projectItemBtn.forEach((button) => {
-  button.addEventListener("click", () => {
-    updateTasksPanel(index);
-  });
-});
+// projectItemBtn.forEach((button) => {
+//   button.addEventListener("click", () => {
+//     console.log("WTF");
+//   });
+// });
 
 mainProjectList.renderHTML();

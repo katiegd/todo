@@ -64,11 +64,12 @@ export class ProjectList {
       projectPanel.appendChild(projectList);
     });
 
-    const projectItemBtn = document.querySelectorAll("#project-item-name");
+    const projectItemBtn = document.querySelectorAll("#project-item");
     projectItemBtn.forEach((item) => {
       item.addEventListener("click", (event) => {
         const index = event.currentTarget.dataset.index;
         updateTasksPanel(index);
+        console.log("WETWF");
       });
     });
 
