@@ -13,21 +13,55 @@ export class ProjectItem {
 export class ProjectList {
   constructor() {
     this.projects = [];
+    this.createEditModal();
   }
 
   addProject(name) {
     let newProject = new ProjectItem(name);
     this.projects.push(newProject);
-    this.renderHTML();
+    this.createNewProject();
   }
 
   removeProject(index) {
     this.projects.splice(index, 1);
-    this.renderHTML();
+    this.createNewProject();
     taskListElement.removeProjectTasks();
   }
 
-  renderHTML() {
+  createEditModal() {
+    const editModal = document.createElement("div");
+    editModal.setAttribute("id", "modal-content");
+    editModal.setAttribute("class", "modal");
+
+    const closeBtn = document.createElement("span");
+    closeBtn.setAttribute("class", "close");
+    closeBtn.textContent = "Close";
+
+    const editProjectNameInput = document.createElement("input");
+    const projectName = document.querySelector("#project-item-name");
+    editProjectNameInput.setAttribute("type", "text");
+    editProjectNameInput.setAttribute("class", "project-name");
+    editProjectNameInput.value = projectName.textContent;
+
+    const submitEditButton = document.createElement("button");
+    submitEditButton.setAttribute("id", "edit-project-name-submit");
+    submitEditButton.textContent = "Submit";
+
+    editModal.appendChild(closeBtn);
+    editModal.appendChild(editProjectNameInput);
+    editModal.appendChild(submitEditButton);
+
+    const mainContainer = document.querySelector("#main-container");
+    mainContainer.appendChild(editModal);
+
+    this.editProjectName();
+  }
+
+  editProjectName(index, newName) {
+    // this.projects[index].name = newName;
+  }
+
+  createNewProject() {
     const projectPanel = document.querySelector("#project-panel");
     const projectList = document.querySelector("#project-list");
     projectList.innerHTML = "";
@@ -79,6 +113,25 @@ export class ProjectList {
     projectDeleteButtons.forEach((button, i) => {
       button.addEventListener("click", () => {
         this.removeProject(i);
+      });
+    });
+    this.showEditProjectNameModal();
+  }
+
+  showEditProjectNameModal() {
+    const editModal = document.querySelector("#modal-content");
+    const launchEditModalBtn = document.querySelectorAll("#project-edit");
+    launchEditModalBtn.forEach((button, index) => {
+      button.addEventListener("click", () => {
+        editModal.style.display = "block";
+        const submitEditButton = document.querySelector(
+          "#edit-project-name-submit"
+        );
+        submitEditButton.addEventListener("click", () => {
+          const newName = document.querySelector(".project-name").value;
+          this.editProjectName(index, newName);
+          editModal.style.display = "none";
+        });
       });
     });
   }
