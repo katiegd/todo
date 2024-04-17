@@ -200,6 +200,10 @@ form button {
   cursor: pointer;
 }
 
+input[type="radio"]:checked + #priority-low {
+  background-color: hsl(120, 100%, 68%);
+}
+
 #priority-med:hover {
   color: var(--darkest-purple);
   background-color: hsl(62, 99%, 65%);
@@ -216,4 +220,10 @@ form button {
   padding: 3px 8px;
   border-radius: 3px;
   cursor: pointer;
+}
+
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
 }
