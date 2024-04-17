@@ -29,15 +29,6 @@ export class TaskList {
     };
   }
 
-  updateTasksPanel(index) {
-    const tasksHeader = document.querySelector(".task-name-h1");
-    const projectName =
-      document.querySelectorAll("#project-item")[index].textContent;
-    tasksHeader.textContent = projectName;
-
-    console.log(projectName);
-  }
-
   removeProjectTasks() {
     const tasksHeader = document.querySelector(".task-name-h1");
     const tasksContent = document.querySelector("#task-list");

@@ -30,36 +30,44 @@ export class ProjectList {
 
   createEditModal() {
     const editModal = document.createElement("div");
-    editModal.setAttribute("id", "modal-content");
-    editModal.setAttribute("class", "modal");
+    editModal.setAttribute("id", "edit-modal");
+    editModal.setAttribute("class", "edit-modal");
+
+    const editModalInput = document.createElement("div");
+    editModalInput.setAttribute("class", "edit-modal-content");
 
     const closeBtn = document.createElement("span");
     closeBtn.setAttribute("class", "close");
     closeBtn.textContent = "Close";
 
+    const inputDiv = document.createElement("div");
+    inputDiv.setAttribute("class", "input-div");
+
     const editProjectNameInput = document.createElement("input");
-    const projectName = document.querySelector("#project-item-name");
     editProjectNameInput.setAttribute("type", "text");
     editProjectNameInput.setAttribute("class", "project-name");
-    editProjectNameInput.value = projectName.textContent;
+    const projectName = document.querySelector("#project-item-name");
+    if (projectName) {
+      editProjectNameInput.value = projectName.textContent;
+    }
 
     const submitEditButton = document.createElement("button");
     submitEditButton.setAttribute("id", "edit-project-name-submit");
     submitEditButton.textContent = "Submit";
 
-    editModal.appendChild(closeBtn);
-    editModal.appendChild(editProjectNameInput);
-    editModal.appendChild(submitEditButton);
+    inputDiv.appendChild(editProjectNameInput);
+    inputDiv.appendChild(submitEditButton);
+    editModalInput.appendChild(closeBtn);
+    editModalInput.appendChild(inputDiv);
 
-    const mainContainer = document.querySelector("#main-container");
-    mainContainer.appendChild(editModal);
+    editModal.appendChild(editModalInput);
+
+    document.body.appendChild(editModal);
 
     this.editProjectName();
   }
 
-  editProjectName(index, newName) {
-    // this.projects[index].name = newName;
-  }
+  editProjectName() {}
 
   createNewProject() {
     const projectPanel = document.querySelector("#project-panel");
@@ -69,12 +77,12 @@ export class ProjectList {
     this.projects.forEach((project, i) => {
       const projectItem = document.createElement("div");
       projectItem.setAttribute("id", "project-item");
-      projectItem.setAttribute("class", `project-${i}-${project.name}`);
       projectItem.dataset.index = i;
 
       const projectName = document.createElement("div");
       projectName.textContent = project.name;
       projectName.setAttribute("id", "project-item-name");
+      projectName.setAttribute("class", `project-${i}`);
 
       const projectEditDeleteDiv = document.createElement("div");
       projectEditDeleteDiv.setAttribute("id", "edit-delete");
@@ -105,7 +113,6 @@ export class ProjectList {
     projectItemBtn.forEach((item) => {
       item.addEventListener("click", (event) => {
         const index = event.currentTarget.dataset.index;
-        taskListElement.updateTasksPanel(index);
       });
     });
 
@@ -119,17 +126,37 @@ export class ProjectList {
   }
 
   showEditProjectNameModal() {
-    const editModal = document.querySelector("#modal-content");
+    const editModal = document.querySelector("#edit-modal");
     const launchEditModalBtn = document.querySelectorAll("#project-edit");
+
     launchEditModalBtn.forEach((button, index) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (e) => {
+        const projectItem = e.currentTarget.closest("#project-item");
+        const index = projectItem.dataset.index;
+        const projectNameID = document.querySelector(
+          `.project-${index}`
+        ).textContent;
+        const projectNameInput = document.querySelector(".project-name");
+        projectNameInput.value = projectNameID;
+
         editModal.style.display = "block";
         const submitEditButton = document.querySelector(
           "#edit-project-name-submit"
         );
+
         submitEditButton.addEventListener("click", () => {
           const newName = document.querySelector(".project-name").value;
-          this.editProjectName(index, newName);
+          const projectItemNames = document.querySelectorAll(
+            `.project-${index}`
+          );
+          projectItemNames.forEach((projectItemName) => {
+            projectItemName.textContent = newName;
+          });
+          editModal.style.display = "none";
+        });
+
+        const closeBtn = editModal.querySelector(".close");
+        closeBtn.addEventListener("click", () => {
           editModal.style.display = "none";
         });
       });
