@@ -146,3 +146,9 @@
   background-color: var(--light-purple);
   cursor: pointer;
 }
+
+.edit-modal-content input {
+  font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
+    source-sans-pro, sans-serif;
+  font-weight: bold;
+}

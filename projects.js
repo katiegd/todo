@@ -13,17 +13,20 @@ export class ProjectItem {
 export class ProjectList {
   constructor() {
     this.projects = [];
+    this.projects = this.loadProjectsFromLocalStorage() || [];
     this.createEditModal();
   }
 
   addProject(name) {
     let newProject = new ProjectItem(name);
     this.projects.push(newProject);
+    this.saveProjectsToLocalStorage();
     this.createNewProject();
   }
 
   removeProject(index) {
     this.projects.splice(index, 1);
+    this.saveProjectsToLocalStorage();
     this.createNewProject();
     taskListElement.removeProjectTasks();
   }
@@ -63,11 +66,7 @@ export class ProjectList {
     editModal.appendChild(editModalInput);
 
     document.body.appendChild(editModal);
-
-    this.editProjectName();
   }
-
-  editProjectName() {}
 
   createNewProject() {
     const projectPanel = document.querySelector("#project-panel");
@@ -111,8 +110,8 @@ export class ProjectList {
 
     const projectItemBtn = document.querySelectorAll("#project-item");
     projectItemBtn.forEach((item) => {
-      item.addEventListener("click", (event) => {
-        const index = event.currentTarget.dataset.index;
+      item.addEventListener("click", (e) => {
+        this.loadProjectTasks(e);
       });
     });
 
@@ -160,6 +159,24 @@ export class ProjectList {
         this.projects[index].name = newName;
       });
       editModal.style.display = "none";
+      this.saveProjectsToLocalStorage();
     });
+  }
+
+  loadProjectsFromLocalStorage() {
+    const projectsJson = localStorage.getItem("projects");
+    return JSON.parse(projectsJson);
+  }
+
+  saveProjectsToLocalStorage() {
+    const projectsJson = JSON.stringify(this.projects);
+    localStorage.setItem("projects", projectsJson);
+  }
+
+  loadProjectTasks(e) {
+    const index = e.currentTarget.dataset.index;
+    let taskName = document.querySelector(".task-name-h1");
+    const projectName = document.querySelector(`.project-${index}`).textContent;
+    taskName.textContent = projectName;
   }
 }
