@@ -105,12 +105,11 @@
   margin: 30vh auto;
   padding: 40px;
   border: none;
-  width: 60%;
+  width: 50%;
   border-radius: 20px;
   box-shadow: 1px 1px 20px #000000;
 }
 
-/* The Close Button */
 .close {
   text-align: right;
   color: var(--light-purple);
@@ -125,19 +124,26 @@
   cursor: pointer;
 }
 
-input {
-  font-size: 1.5rem;
+label {
+  font-size: 1.2rem;
+  color: var(--light-purple);
+  font-weight: 300;
+}
+
+input[type="text"] {
+  font-size: 1rem;
+  margin-bottom: 20px;
 }
 
 textarea {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
 }
 
 form {
   width: 90%;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   display: grid;
-  gap: 20px;
 }
 
 form button {
@@ -147,4 +153,67 @@ form button {
 .date-priority {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.task-priority,
+.date {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+#priority-low {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: hsl(120, 100%, 68%);
+  border: 1px solid hsl(120, 100%, 68%);
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+
+#priority-med {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: hsl(62, 99%, 65%);
+  border: 1px solid hsl(62, 99%, 65%);
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+
+#priority-high {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: hsl(0, 100%, 65%);
+  border: 1px solid hsl(0, 100%, 65%);
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+
+#priority-low:hover {
+  color: var(--darkest-purple);
+  background-color: hsl(120, 100%, 68%);
+  border: 1px solid hsl(120, 100%, 68%);
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#priority-med:hover {
+  color: var(--darkest-purple);
+  background-color: hsl(62, 99%, 65%);
+  border: 1px solid hsl(62, 99%, 65%);
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+#priority-high:hover {
+  color: var(--darkest-purple);
+  background-color: hsl(0, 100%, 65%);
+  border: 1px solid hsl(0, 100%, 65%);
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
 }
