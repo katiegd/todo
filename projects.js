@@ -129,10 +129,11 @@ export class ProjectList {
     const editModal = document.querySelector("#edit-modal");
     const launchEditModalBtn = document.querySelectorAll("#project-edit");
 
-    launchEditModalBtn.forEach((button, index) => {
+    launchEditModalBtn.forEach((button) => {
       button.addEventListener("click", (e) => {
         const projectItem = e.currentTarget.closest("#project-item");
         const index = projectItem.dataset.index;
+        editModal.dataset.index = index;
         const projectNameID = document.querySelector(
           `.project-${index}`
         ).textContent;
@@ -140,26 +141,25 @@ export class ProjectList {
         projectNameInput.value = projectNameID;
 
         editModal.style.display = "block";
-        const submitEditButton = document.querySelector(
-          "#edit-project-name-submit"
-        );
-
-        submitEditButton.addEventListener("click", () => {
-          const newName = document.querySelector(".project-name").value;
-          const projectItemNames = document.querySelectorAll(
-            `.project-${index}`
-          );
-          projectItemNames.forEach((projectItemName) => {
-            projectItemName.textContent = newName;
-          });
-          editModal.style.display = "none";
-        });
 
         const closeBtn = editModal.querySelector(".close");
         closeBtn.addEventListener("click", () => {
           editModal.style.display = "none";
         });
       });
+    });
+    const submitEditButton = document.querySelector(
+      "#edit-project-name-submit"
+    );
+    submitEditButton.addEventListener("click", () => {
+      const newName = document.querySelector(".project-name").value;
+      const index = editModal.dataset.index;
+      const projectItemNames = document.querySelectorAll(`.project-${index}`);
+      projectItemNames.forEach((projectItemName) => {
+        projectItemName.textContent = newName;
+        this.projects[index].name = newName;
+      });
+      editModal.style.display = "none";
     });
   }
 }
