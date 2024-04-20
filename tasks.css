@@ -98,12 +98,15 @@
 }
 
 .modal-content {
+  position: relative;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   background-color: var(--medium-purple);
   margin: 30vh auto;
-  padding: 40px;
+  padding: 40px 0px;
   border: none;
   width: 50%;
   border-radius: 20px;
@@ -111,10 +114,13 @@
 }
 
 .close {
+  position: absolute;
+  top: 0.3rem;
+  right: 1.1rem;
   text-align: right;
   color: var(--light-purple);
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 2rem;
+  padding: 5px;
 }
 
 .close:hover,
@@ -143,7 +149,6 @@ textarea {
 }
 
 form {
-  width: 90%;
   font-size: 1.2rem;
   display: grid;
   gap: 5px;
@@ -163,8 +168,9 @@ form {
   gap: 20px;
 }
 
-#priority-low {
+.priority-low {
   font-size: 0.8rem;
+  font-weight: 500;
   text-transform: uppercase;
   color: hsl(120, 100%, 68%);
   border: 1px solid hsl(120, 100%, 68%);
@@ -173,8 +179,15 @@ form {
   transition: background-color 0.3s ease-in-out;
 }
 
-#priority-med {
+.low-active {
+  color: var(--medium-purple);
+  background-color: hsl(120, 100%, 68%);
+}
+
+.priority-med {
   font-size: 0.8rem;
+  font-weight: 500;
+
   text-transform: uppercase;
   color: hsl(62, 99%, 65%);
   border: 1px solid hsl(62, 99%, 65%);
@@ -183,8 +196,14 @@ form {
   transition: background-color 0.3s ease-in-out;
 }
 
-#priority-high {
+.med-active {
+  color: var(--medium-purple);
+  background-color: hsl(62, 99%, 65%);
+}
+
+.priority-high {
   font-size: 0.8rem;
+  font-weight: 500;
   text-transform: uppercase;
   color: hsl(0, 100%, 65%);
   border: 1px solid hsl(0, 100%, 65%);
@@ -193,7 +212,12 @@ form {
   transition: background-color 0.3s ease-in-out;
 }
 
-#priority-low:hover {
+.high-active {
+  color: var(--medium-purple);
+  background-color: hsl(0, 100%, 65%);
+}
+
+.priority-low:hover {
   color: var(--darkest-purple);
   background-color: hsl(120, 100%, 68%);
   border: 1px solid hsl(120, 100%, 68%);
@@ -202,11 +226,7 @@ form {
   cursor: pointer;
 }
 
-input[type="radio"]:checked + label {
-  background-color: hsl(120, 100%, 68%);
-}
-
-#priority-med:hover {
+.priority-med:hover {
   color: var(--darkest-purple);
   background-color: hsl(62, 99%, 65%);
   border: 1px solid hsl(62, 99%, 65%);
@@ -215,7 +235,7 @@ input[type="radio"]:checked + label {
   cursor: pointer;
 }
 
-#priority-high:hover {
+.priority-high:hover {
   color: var(--darkest-purple);
   background-color: hsl(0, 100%, 65%);
   border: 1px solid hsl(0, 100%, 65%);
@@ -232,15 +252,26 @@ input[type="radio"] {
 
 input[type="date"] {
   padding: 0.2rem 0.5rem;
-  border: 1px solid #d4d4d4;
+  border: 1px solid var(--lightest-purple);
   border-radius: 5px;
-  color: #d4d4d4;
+  color: var(--lightest-purple);
   background-color: transparent;
   font-size: 0.88rem;
   text-transform: uppercase;
   font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
     source-sans-pro, sans-serif;
   font-weight: 300;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  margin-right: 1px;
+  opacity: 0.6;
+  filter: invert(1);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
 }
 
 #task-submit {

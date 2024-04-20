@@ -14,8 +14,12 @@ export class TaskList {
     const modal = document.querySelector("#task-modal");
     const modalBtn = document.querySelector("#add-task");
     const closeBtn = document.querySelector(".close");
+    const submitTaskBtn = document.querySelector("#task-submit");
+    const priorityLowBtn = document.querySelector(".priority-low");
+    const priorityMedBtn = document.querySelector(".priority-med");
+    const priorityHighBtn = document.querySelector(".priority-high");
 
-    modal.style.display = "none";
+    modal.style.display = "block";
 
     modalBtn.addEventListener("click", () => {
       modal.style.display = "block";
@@ -34,6 +38,24 @@ export class TaskList {
     submitTaskBtn.addEventListener("click", () => {
       // appendTaskToTaskList();
       modal.style.display = "none";
+    });
+
+    priorityLowBtn.addEventListener("click", () => {
+      priorityLowBtn.classList.toggle("low-active");
+      priorityMedBtn.classList.remove("med-active");
+      priorityHighBtn.classList.remove("high-active");
+    });
+
+    priorityMedBtn.addEventListener("click", () => {
+      priorityMedBtn.classList.toggle("med-active");
+      priorityLowBtn.classList.remove("low-active");
+      priorityHighBtn.classList.remove("high-active");
+    });
+
+    priorityHighBtn.addEventListener("click", () => {
+      priorityHighBtn.classList.toggle("high-active");
+      priorityLowBtn.classList.remove("low-active");
+      priorityMedBtn.classList.remove("med-active");
     });
   }
 
@@ -57,7 +79,7 @@ export class TaskList {
 
     const closeBtn = document.createElement("span");
     closeBtn.setAttribute("class", "close");
-    closeBtn.textContent = "Close";
+    closeBtn.textContent = "×";
 
     const titleLabel = document.createElement("label");
     titleLabel.setAttribute("for", "title");
@@ -101,7 +123,7 @@ export class TaskList {
     priorityLabel.textContent = "Priority:";
 
     const priorityLowLabel = document.createElement("label");
-    priorityLowLabel.setAttribute("id", "priority-low");
+    priorityLowLabel.setAttribute("class", "priority-low");
     priorityLowLabel.textContent = "Low";
 
     const priorityLowBtn = document.createElement("input");
@@ -110,7 +132,7 @@ export class TaskList {
     priorityLowBtn.setAttribute("required", true);
 
     const priorityMedLabel = document.createElement("label");
-    priorityMedLabel.setAttribute("id", "priority-med");
+    priorityMedLabel.setAttribute("class", "priority-med");
     priorityMedLabel.textContent = "Medium";
 
     const priorityMedBtn = document.createElement("input");
@@ -119,7 +141,7 @@ export class TaskList {
     priorityMedBtn.setAttribute("required", true);
 
     const priorityHighLabel = document.createElement("label");
-    priorityHighLabel.setAttribute("id", "priority-high");
+    priorityHighLabel.setAttribute("class", "priority-high");
     priorityHighLabel.textContent = "High";
 
     const priorityHighBtn = document.createElement("input");
@@ -145,7 +167,6 @@ export class TaskList {
     datePriorityDiv.appendChild(dateDiv);
     datePriorityDiv.appendChild(priorityDiv);
 
-    taskForm.appendChild(closeBtn);
     taskForm.appendChild(titleLabel);
     taskForm.appendChild(titleInput);
     taskForm.appendChild(descriptionLabel);
@@ -153,6 +174,7 @@ export class TaskList {
     taskForm.appendChild(datePriorityDiv);
     taskForm.appendChild(submitTaskBtn);
 
+    taskDiv.appendChild(closeBtn);
     taskDiv.appendChild(taskForm);
     taskModal.appendChild(taskDiv);
     document.body.appendChild(taskModal);
