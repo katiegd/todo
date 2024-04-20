@@ -15,6 +15,7 @@ export class ProjectList {
     this.projects = [];
     this.projects = this.loadProjectsFromLocalStorage() || [];
     this.createEditModal();
+    this.createNewProject();
   }
 
   addProject(name) {

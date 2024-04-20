@@ -127,16 +127,18 @@
 label {
   font-size: 1.2rem;
   color: var(--light-purple);
-  font-weight: 300;
+  font-weight: 400;
 }
 
 input[type="text"] {
   font-size: 1rem;
   margin-bottom: 20px;
+  padding: 5px;
 }
 
 textarea {
   font-size: 1.2rem;
+  padding: 5px;
   margin-bottom: 20px;
 }
 
@@ -144,10 +146,7 @@ form {
   width: 90%;
   font-size: 1.2rem;
   display: grid;
-}
-
-form button {
-  width: 70px;
+  gap: 5px;
 }
 
 .date-priority {
@@ -171,6 +170,7 @@ form button {
   border: 1px solid hsl(120, 100%, 68%);
   padding: 3px 8px;
   border-radius: 3px;
+  transition: background-color 0.3s ease-in-out;
 }
 
 #priority-med {
@@ -180,6 +180,7 @@ form button {
   border: 1px solid hsl(62, 99%, 65%);
   padding: 3px 8px;
   border-radius: 3px;
+  transition: background-color 0.3s ease-in-out;
 }
 
 #priority-high {
@@ -189,6 +190,7 @@ form button {
   border: 1px solid hsl(0, 100%, 65%);
   padding: 3px 8px;
   border-radius: 3px;
+  transition: background-color 0.3s ease-in-out;
 }
 
 #priority-low:hover {
@@ -200,7 +202,7 @@ form button {
   cursor: pointer;
 }
 
-input[type="radio"]:checked + #priority-low {
+input[type="radio"]:checked + label {
   background-color: hsl(120, 100%, 68%);
 }
 
@@ -226,4 +228,37 @@ input[type="radio"] {
   position: absolute;
   opacity: 0;
   pointer-events: none;
+}
+
+input[type="date"] {
+  padding: 0.2rem 0.5rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 5px;
+  color: #d4d4d4;
+  background-color: transparent;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
+    source-sans-pro, sans-serif;
+  font-weight: 300;
+}
+
+#task-submit {
+  font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
+    source-sans-pro, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  margin-top: 2rem;
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: var(--light-purple);
+  transition: background-color 0.2s ease-in-out;
+}
+
+#task-submit:hover {
+  color: var(--dark-purple);
+  background-color: var(--lightest-purple);
+  cursor: pointer;
 }

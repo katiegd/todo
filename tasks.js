@@ -15,7 +15,7 @@ export class TaskList {
     const modalBtn = document.querySelector("#add-task");
     const closeBtn = document.querySelector(".close");
 
-    modal.style.display = "block";
+    modal.style.display = "none";
 
     modalBtn.addEventListener("click", () => {
       modal.style.display = "block";
@@ -30,6 +30,11 @@ export class TaskList {
         modal.style.display = "none";
       }
     };
+
+    submitTaskBtn.addEventListener("click", () => {
+      // appendTaskToTaskList();
+      modal.style.display = "none";
+    });
   }
 
   removeProjectTasks() {
@@ -101,6 +106,7 @@ export class TaskList {
 
     const priorityLowBtn = document.createElement("input");
     priorityLowBtn.setAttribute("type", "radio");
+    priorityLowBtn.setAttribute("value", "low");
     priorityLowBtn.setAttribute("required", true);
 
     const priorityMedLabel = document.createElement("label");
@@ -109,6 +115,7 @@ export class TaskList {
 
     const priorityMedBtn = document.createElement("input");
     priorityMedBtn.setAttribute("type", "radio");
+    priorityMedBtn.setAttribute("value", "medium");
     priorityMedBtn.setAttribute("required", true);
 
     const priorityHighLabel = document.createElement("label");
@@ -117,6 +124,7 @@ export class TaskList {
 
     const priorityHighBtn = document.createElement("input");
     priorityHighBtn.setAttribute("type", "radio");
+    priorityHighBtn.setAttribute("value", "high");
     priorityHighBtn.setAttribute("required", true);
 
     const submitTaskBtn = document.createElement("button");
