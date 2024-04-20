@@ -1,6 +1,9 @@
 export class TaskItem {
-  constructor(name) {
+  constructor(name, description, dueDate, priority) {
     this.name = name;
+    this.description = description;
+    this.dueDate = dueDate;
+    this.priority = priority;
   }
 }
 
@@ -8,20 +11,27 @@ export class TaskList {
   constructor() {
     this.tasks = [];
     this.createTaskModal();
+    this.appendTaskToTaskList();
+  }
+
+  addTask(name) {
+    let newTask = new TaskItem(name);
+    this.tasks.push(newTask);
+    this.appendTaskToTaskList();
   }
 
   renderHTML() {
     const modal = document.querySelector("#task-modal");
-    const modalBtn = document.querySelector("#add-task");
+    const addNewTaskBtn = document.querySelector("#add-task");
     const closeBtn = document.querySelector(".close");
     const submitTaskBtn = document.querySelector("#task-submit");
     const priorityLowBtn = document.querySelector(".priority-low");
     const priorityMedBtn = document.querySelector(".priority-med");
     const priorityHighBtn = document.querySelector(".priority-high");
 
-    modal.style.display = "block";
+    modal.style.display = "none";
 
-    modalBtn.addEventListener("click", () => {
+    addNewTaskBtn.addEventListener("click", () => {
       modal.style.display = "block";
     });
 
@@ -36,7 +46,7 @@ export class TaskList {
     };
 
     submitTaskBtn.addEventListener("click", () => {
-      // appendTaskToTaskList();
+      this.appendTaskToTaskList();
       modal.style.display = "none";
     });
 
@@ -75,6 +85,7 @@ export class TaskList {
     taskDiv.setAttribute("class", "modal-content");
 
     const taskForm = document.createElement("form");
+    taskForm.setAttribute("id", "task-form");
     taskForm.setAttribute("action", "");
 
     const closeBtn = document.createElement("span");
@@ -91,7 +102,7 @@ export class TaskList {
     titleInput.setAttribute("placeholder", "e.g. Water plants");
 
     const descriptionLabel = document.createElement("label");
-    descriptionLabel.setAttribute("for", "title");
+    descriptionLabel.setAttribute("for", "description");
     descriptionLabel.textContent = "Description";
 
     const descriptionInput = document.createElement("textarea");
@@ -123,6 +134,7 @@ export class TaskList {
     priorityLabel.textContent = "Priority:";
 
     const priorityLowLabel = document.createElement("label");
+    priorityLowLabel.setAttribute("id", "priority");
     priorityLowLabel.setAttribute("class", "priority-low");
     priorityLowLabel.textContent = "Low";
 
@@ -132,6 +144,7 @@ export class TaskList {
     priorityLowBtn.setAttribute("required", true);
 
     const priorityMedLabel = document.createElement("label");
+    priorityMedLabel.setAttribute("id", "priority");
     priorityMedLabel.setAttribute("class", "priority-med");
     priorityMedLabel.textContent = "Medium";
 
@@ -141,6 +154,7 @@ export class TaskList {
     priorityMedBtn.setAttribute("required", true);
 
     const priorityHighLabel = document.createElement("label");
+    priorityHighLabel.setAttribute("id", "priority");
     priorityHighLabel.setAttribute("class", "priority-high");
     priorityHighLabel.textContent = "High";
 
@@ -178,5 +192,60 @@ export class TaskList {
     taskDiv.appendChild(taskForm);
     taskModal.appendChild(taskDiv);
     document.body.appendChild(taskModal);
+  }
+
+  // Try emulating the add project task with "forEach(task) etc etc..."
+  appendTaskToTaskList() {
+    const taskTitleInput = document.querySelector("#task-title").value;
+    const taskDescriptionInput =
+      document.querySelector("#task-description").value;
+    const taskDueDateInput = document.querySelector("#task-due-date");
+    const taskPriorityInput = document.querySelector('[class*="active"]');
+
+    const newTask = new TaskItem(
+      taskTitleInput,
+      taskDescriptionInput,
+      taskDueDateInput,
+      taskPriorityInput
+    );
+
+    const taskList = document.querySelector("#task-list");
+    taskList.innerHTML = "";
+
+    const taskItem = document.createElement("div");
+    taskItem.setAttribute("class", "task-item");
+
+    const taskCheckbox = document.createElement("input");
+    taskCheckbox.setAttribute("type", "checkbox");
+    taskCheckbox.classList.add("unchecked");
+
+    const taskDetails = document.createElement("div");
+    taskDetails.setAttribute("class", "task-details");
+
+    const taskName = document.createElement("div");
+    taskName.setAttribute("class", "task-name");
+    taskName.textContent = "HELLO";
+
+    const taskDescription = document.createElement("div");
+    taskDescription.setAttribute("class", "task-description");
+    taskDescription.textContent = "DESCRIPTION";
+
+    const taskDueDate = document.createElement("div");
+    taskDueDate.setAttribute("class", "task-due-date");
+    taskDueDate.textContent = "APRIL";
+
+    const taskPriority = document.createElement("div");
+    taskPriority.setAttribute("class", "task-priority");
+    taskPriority.textContent = taskPriorityInput;
+
+    taskDetails.appendChild(taskName);
+    taskDetails.appendChild(taskDescription);
+    taskDetails.appendChild(taskDueDate);
+    taskDetails.appendChild(taskPriority);
+
+    taskItem.appendChild(taskCheckbox);
+    taskItem.appendChild(taskDetails);
+
+    taskList.appendChild(taskItem);
   }
 }
