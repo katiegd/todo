@@ -35,51 +35,74 @@
   transform: rotate(90deg);
 }
 
-.task-item {
+#task-edit-delete {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+#task-edit-delete img {
+  background-color: #cbcbcb;
+  opacity: 0.7;
+  padding: 3px;
+  border-radius: 50%;
+}
+
+#task-edit-delete img:hover {
+  background-color: var(--light-purple);
+  cursor: pointer;
+}
+
+div[class^="task-item-"] {
   display: grid;
-  grid-template-columns: 50px 1fr 50px;
+  grid-template-columns: 50px 1fr;
   justify-content: start;
   align-items: center;
+  justify-items: stretch;
   width: 100%;
-  border-radius: 20px 0px 0px 20px;
+  border-radius: 0px 10px 10px 0px;
   padding: 10px;
   margin: 0px 0px 15px 0px;
-  background-color: var(--medium-purple);
-  box-shadow: -3px 0px 1px var(--light-purple);
+  color: #cbcbcb;
+  background-color: rgba(51, 46, 56, 0.3);
+}
+.checked {
+  opacity: 0.3;
+  text-decoration: line-through;
 }
 
-.task-edit-delete-dropdown {
-  font-size: 1.5rem;
-  color: var(--light-purple);
-  background-color: var(--medium-purple);
-  border: none;
+.priority-Low {
+  box-shadow: -5px 0px 0px hsl(120, 100%, 35%);
 }
 
-.task-edit-delete-dropdown:hover {
-  color: #fefefe;
-  cursor: pointer;
+.priority-Medium {
+  box-shadow: -5px 0px 0px hsl(62, 99%, 35%);
+}
+
+.priority-High {
+  box-shadow: -5px 0px 0px hsl(0, 100%, 35%);
 }
 
 .task-details {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr 1fr;
+  grid-template-columns: 2fr 2fr 1fr 1fr 60px;
   justify-content: start;
   align-items: center;
 }
 
 .task-name {
-  font-size: medium;
-  font-weight: 300;
+  font-size: 1rem;
+  font-weight: 400;
 }
 
 .task-description,
 .task-due-date {
-  font-size: small;
+  font-size: 0.9rem;
   font-weight: 100;
 }
 
 .task-priority {
-  font-size: small;
+  font-size: 0.9rem;
   font-weight: 100;
 }
 
@@ -281,7 +304,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   font-weight: 500;
   border: none;
   margin-top: 2rem;
-  width: 100%;
+  width: 85%;
   padding: 10px 20px;
   border-radius: 5px;
   background-color: var(--light-purple);

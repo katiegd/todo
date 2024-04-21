@@ -28,7 +28,8 @@ addProjectBtn.addEventListener("click", () => {
   }
 });
 
+mainTaskList.createNewTask();
+mainTaskList.createTaskModal();
 mainTaskList.renderHTML();
-mainTaskList.appendTaskToTaskList();
 mainProjectList.createNewProject();
 mainProjectList.showEditProjectNameModal();
