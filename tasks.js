@@ -11,6 +11,7 @@ export class TaskList {
   constructor() {
     this.tasks = [];
     this.tasks = this.loadTasksFromLocalStorage() || [];
+    //renderHTML()? maybe add createTaskModal and createEditTaskModal into the renderHTML function?
     this.createTaskModal();
     this.createEditTaskModal();
   }
@@ -40,6 +41,7 @@ export class TaskList {
     addTaskModal.style.display = "none";
 
     addNewTaskBtn.addEventListener("click", () => {
+      document.getElementById("task-form").reset();
       addTaskModal.style.display = "block";
     });
 
@@ -213,9 +215,9 @@ export class TaskList {
 
   createEditTaskModal() {
     if (!document.querySelector("#edit-task-modal")) {
-      const editTaskModal = document.createElement("div");
-      editTaskModal.setAttribute("id", "edit-task-modal");
-      editTaskModal.setAttribute("class", "modal");
+      const taskModal = document.createElement("div");
+      taskModal.setAttribute("id", "edit-task-modal");
+      taskModal.setAttribute("class", "modal");
 
       const taskDiv = document.createElement("div");
       taskDiv.setAttribute("class", "modal-content");
@@ -225,7 +227,7 @@ export class TaskList {
       taskForm.setAttribute("action", "");
 
       const closeBtn = document.createElement("span");
-      closeBtn.setAttribute("class", "close");
+      closeBtn.setAttribute("class", "edit-close");
       closeBtn.textContent = "×";
 
       const titleLabel = document.createElement("label");
@@ -272,7 +274,7 @@ export class TaskList {
       const priorityLowLabel = document.createElement("label");
       priorityLowLabel.setAttribute("id", "priority");
       priorityLowLabel.setAttribute("class", "priority-low");
-      priorityLowLabel.textContent = "Low";
+      priorityLowLabel.textContent = "low";
 
       const priorityLowBtn = document.createElement("input");
       priorityLowBtn.setAttribute("type", "radio");
@@ -282,7 +284,7 @@ export class TaskList {
       const priorityMedLabel = document.createElement("label");
       priorityMedLabel.setAttribute("id", "priority");
       priorityMedLabel.setAttribute("class", "priority-med");
-      priorityMedLabel.textContent = "Medium";
+      priorityMedLabel.textContent = "medium";
 
       const priorityMedBtn = document.createElement("input");
       priorityMedBtn.setAttribute("type", "radio");
@@ -292,7 +294,7 @@ export class TaskList {
       const priorityHighLabel = document.createElement("label");
       priorityHighLabel.setAttribute("id", "priority");
       priorityHighLabel.setAttribute("class", "priority-high");
-      priorityHighLabel.textContent = "High";
+      priorityHighLabel.textContent = "high";
 
       const priorityHighBtn = document.createElement("input");
       priorityHighBtn.setAttribute("type", "radio");
@@ -300,7 +302,7 @@ export class TaskList {
       priorityHighBtn.setAttribute("required", true);
 
       const submitTaskBtn = document.createElement("button");
-      submitTaskBtn.setAttribute("id", "task-submit");
+      submitTaskBtn.setAttribute("id", "edit-task-submit");
       submitTaskBtn.textContent = "Confirm Edit";
 
       dateDiv.appendChild(dateLabel);
@@ -326,8 +328,8 @@ export class TaskList {
       taskDiv.appendChild(closeBtn);
       taskDiv.appendChild(taskForm);
       taskDiv.appendChild(submitTaskBtn);
-      editTaskModal.appendChild(taskDiv);
-      document.body.appendChild(editTaskModal);
+      taskModal.appendChild(taskDiv);
+      document.body.appendChild(taskModal);
     }
   }
 
@@ -337,12 +339,21 @@ export class TaskList {
     editTaskModal.querySelector("#task-title").value = task.name;
     editTaskModal.querySelector("#task-description").value = task.description;
     editTaskModal.querySelector("#task-due-date").value = task.dueDate;
-    editTaskModal.querySelector(".task-priority").value = task.priority;
+    const taskPriorityText = task.priority;
+    const taskPriorityAddClass = editTaskModal.querySelector(
+      `.priority-${taskPriorityText.toLowerCase()}`
+    );
+    if (taskPriorityAddClass) {
+      taskPriorityAddClass.classList.add(
+        `${taskPriorityText.toLowerCase()}-active`
+      );
+    }
 
     console.log(task.name);
     console.log(task.description);
     console.log(task.dueDate);
     console.log(task.priority);
+    console.log(taskPriorityAddClass);
 
     editTaskModal.style.display = "block";
   }
@@ -400,7 +411,7 @@ export class TaskList {
       const dueDate = new Date(newTask.dueDate);
       const formattedDueDate = `${dueDate.toLocaleString("en-US", {
         month: "short",
-      })} ${dueDate.getDate()}, ${dueDate.getFullYear()}`;
+      })} ${dueDate.getDate() + 1}, ${dueDate.getFullYear()}`;
       taskDueDate.setAttribute("class", "task-due-date");
       taskDueDate.textContent = `Due: ${formattedDueDate}`;
 
@@ -445,24 +456,19 @@ export class TaskList {
         const task = this.tasks[index];
         this.populateEditModal(task);
 
-        document.querySelector("#task-submit").addEventListener("click", () => {
-          const newName = document.querySelector("#task-title").value;
-          const newDescription =
-            document.querySelector("#task-description").value;
-          const newDueDate = document.querySelector("#task-due-date");
-          const newPriority = document.querySelector(
-            `.priority-${priority.textContent}`
-          );
+        document
+          .querySelector("#edit-task-submit")
+          .addEventListener("click", () => {
+            const newName = document.querySelector("#task-title").value;
+            const newDescription =
+              document.querySelector("#task-description").value;
+            const newDueDate = document.querySelector("#task-due-date");
+            const newPriority = document.querySelector(
+              `.priority-${priority.textContent}`
+            );
 
-          this.editTaskModal(
-            index,
-            newName,
-            newDescription,
-            newDueDate,
-            newPriority
-          );
-          document.querySelector("#task-modal").style.display = "none";
-        });
+            document.querySelector("#edit-task-modal").style.display = "none";
+          });
       });
     });
 
