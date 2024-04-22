@@ -220,7 +220,13 @@ export class TaskList {
 
       const taskCheckbox = document.createElement("input");
       taskCheckbox.setAttribute("type", "checkbox");
-      taskCheckbox.classList.add("task-checkbox");
+      taskCheckbox.setAttribute("id", "task-checkbox");
+
+      const taskCheckboxCustom = document.createElement("span");
+      taskCheckboxCustom.setAttribute("class", "checkmark");
+
+      const taskCheckboxLabel = document.createElement("label");
+      taskCheckboxLabel.classList.add("task-checkbox");
 
       taskCheckbox.addEventListener("change", () => {
         if (taskCheckbox.checked) {
@@ -277,7 +283,9 @@ export class TaskList {
       taskDetails.appendChild(taskPriority);
       taskDetails.appendChild(taskEditDeleteDiv);
 
-      taskItem.appendChild(taskCheckbox);
+      taskCheckboxLabel.appendChild(taskCheckbox);
+      taskCheckboxLabel.appendChild(taskCheckboxCustom);
+      taskItem.appendChild(taskCheckboxLabel);
       taskItem.appendChild(taskDetails);
 
       taskList.appendChild(taskItem);

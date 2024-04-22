@@ -20,7 +20,7 @@
 
 #add-task {
   background-color: var(--light-purple);
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   height: 50px;
   width: 50px;
   border-radius: 50%;
@@ -65,7 +65,74 @@ div[class^="task-item-"] {
   margin: 0px 0px 15px 0px;
   color: #cbcbcb;
   background-color: rgba(51, 46, 56, 0.3);
+  transition: transform 0.3s ease;
 }
+
+div[class^="task-item-"]:hover {
+  background-color: hsl(272, 10%, 19%);
+  cursor: pointer;
+}
+
+.task-checkbox {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.task-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: -5px;
+  left: 5px;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+}
+
+.task-checkbox:hover input ~ .checkmark {
+  background-color: var(--lightest-purple);
+}
+
+.task-checkbox input:checked ~ .checkmark {
+  background-color: var(--light-purple);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.task-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.task-checkbox .checkmark:after {
+  left: 6px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
 .checked {
   opacity: 0.3;
   text-decoration: line-through;
