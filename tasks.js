@@ -12,10 +12,11 @@ export class TaskList {
     this.tasks = [];
     this.tasks = this.loadTasksFromLocalStorage() || [];
     this.createTaskModal();
+    this.createEditTaskModal();
   }
 
-  addTask(name, description, dueDate, priority) {
-    let newTask = new TaskItem(name, description, dueDate, priority);
+  addTask(projectId, name, description, dueDate, priority) {
+    let newTask = new TaskItem(projectId, name, description, dueDate, priority);
     this.tasks.push(newTask);
     this.saveTasksToLocalStorage();
     this.createNewTask();
@@ -28,7 +29,7 @@ export class TaskList {
   }
 
   renderHTML() {
-    const modal = document.querySelector("#task-modal");
+    const addTaskModal = document.querySelector("#task-modal");
     const addNewTaskBtn = document.querySelector("#add-task");
     const closeBtn = document.querySelector(".close");
     const submitTaskBtn = document.querySelector("#task-submit");
@@ -36,19 +37,19 @@ export class TaskList {
     const priorityMedBtn = document.querySelector(".priority-med");
     const priorityHighBtn = document.querySelector(".priority-high");
 
-    modal.style.display = "none";
+    addTaskModal.style.display = "none";
 
     addNewTaskBtn.addEventListener("click", () => {
-      modal.style.display = "block";
+      addTaskModal.style.display = "block";
     });
 
     closeBtn.addEventListener("click", () => {
-      modal.style.display = "none";
+      addTaskModal.style.display = "none";
     });
 
     window.onclick = function (event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
+      if (event.target == addTaskModal) {
+        addTaskModal.style.display = "none";
       }
     };
 
@@ -68,7 +69,7 @@ export class TaskList {
 
       document.getElementById("task-form").reset();
 
-      modal.style.display = "none";
+      addTaskModal.style.display = "none";
     });
 
     priorityLowBtn.addEventListener("click", () => {
@@ -91,121 +92,268 @@ export class TaskList {
   }
 
   createTaskModal() {
-    const taskModal = document.createElement("div");
-    taskModal.setAttribute("id", "task-modal");
-    taskModal.setAttribute("class", "modal");
+    if (!document.querySelector("#task-modal")) {
+      const taskModal = document.createElement("div");
+      taskModal.setAttribute("id", "task-modal");
+      taskModal.setAttribute("class", "modal");
 
-    const taskDiv = document.createElement("div");
-    taskDiv.setAttribute("class", "modal-content");
+      const taskDiv = document.createElement("div");
+      taskDiv.setAttribute("class", "modal-content");
 
-    const taskForm = document.createElement("form");
-    taskForm.setAttribute("id", "task-form");
-    taskForm.setAttribute("action", "");
+      const taskForm = document.createElement("form");
+      taskForm.setAttribute("id", "task-form");
+      taskForm.setAttribute("action", "");
 
-    const closeBtn = document.createElement("span");
-    closeBtn.setAttribute("class", "close");
-    closeBtn.textContent = "×";
+      const closeBtn = document.createElement("span");
+      closeBtn.setAttribute("class", "close");
+      closeBtn.textContent = "×";
 
-    const titleLabel = document.createElement("label");
-    titleLabel.setAttribute("for", "title");
-    titleLabel.textContent = "Task Name";
+      const titleLabel = document.createElement("label");
+      titleLabel.setAttribute("for", "title");
+      titleLabel.textContent = "Task Name";
 
-    const titleInput = document.createElement("input");
-    titleInput.setAttribute("type", "text");
-    titleInput.setAttribute("id", "task-title");
-    titleInput.setAttribute("placeholder", "e.g. Water plants");
+      const titleInput = document.createElement("input");
+      titleInput.setAttribute("type", "text");
+      titleInput.setAttribute("id", "task-title");
+      titleInput.setAttribute("placeholder", "e.g. Water plants");
 
-    const descriptionLabel = document.createElement("label");
-    descriptionLabel.setAttribute("for", "description");
-    descriptionLabel.textContent = "Description";
+      const descriptionLabel = document.createElement("label");
+      descriptionLabel.setAttribute("for", "description");
+      descriptionLabel.textContent = "Description";
 
-    const descriptionInput = document.createElement("textarea");
-    descriptionInput.setAttribute("id", "task-description");
-    descriptionInput.setAttribute(
-      "placeholder",
-      "e.g. water ferns, tomatoes, etc."
-    );
+      const descriptionInput = document.createElement("textarea");
+      descriptionInput.setAttribute("id", "task-description");
+      descriptionInput.setAttribute(
+        "placeholder",
+        "e.g. water ferns, tomatoes, etc."
+      );
 
-    const datePriorityDiv = document.createElement("div");
-    datePriorityDiv.setAttribute("class", "date-priority");
+      const datePriorityDiv = document.createElement("div");
+      datePriorityDiv.setAttribute("class", "date-priority");
 
-    const dateDiv = document.createElement("div");
-    dateDiv.setAttribute("class", "date");
+      const dateDiv = document.createElement("div");
+      dateDiv.setAttribute("class", "date");
 
-    const dateLabel = document.createElement("label");
-    dateLabel.setAttribute("for", "due-date");
-    dateLabel.textContent = "Due Date:";
+      const dateLabel = document.createElement("label");
+      dateLabel.setAttribute("for", "due-date");
+      dateLabel.textContent = "Due Date:";
 
-    const dateInput = document.createElement("input");
-    dateInput.setAttribute("type", "date");
-    dateInput.setAttribute("id", "task-due-date");
+      const dateInput = document.createElement("input");
+      dateInput.setAttribute("type", "date");
+      dateInput.setAttribute("id", "task-due-date");
 
-    const priorityDiv = document.createElement("div");
-    priorityDiv.setAttribute("class", "task-priority");
+      const priorityDiv = document.createElement("div");
+      priorityDiv.setAttribute("class", "task-priority");
 
-    const priorityLabel = document.createElement("label");
-    priorityLabel.setAttribute("for", "priority");
-    priorityLabel.textContent = "Priority:";
+      const priorityLabel = document.createElement("label");
+      priorityLabel.setAttribute("for", "priority");
+      priorityLabel.textContent = "Priority:";
 
-    const priorityLowLabel = document.createElement("label");
-    priorityLowLabel.setAttribute("id", "priority");
-    priorityLowLabel.setAttribute("class", "priority-low");
-    priorityLowLabel.textContent = "Low";
+      const priorityLowLabel = document.createElement("label");
+      priorityLowLabel.setAttribute("id", "priority");
+      priorityLowLabel.setAttribute("class", "priority-low");
+      priorityLowLabel.textContent = "Low";
 
-    const priorityLowBtn = document.createElement("input");
-    priorityLowBtn.setAttribute("type", "radio");
-    priorityLowBtn.setAttribute("value", "low");
-    priorityLowBtn.setAttribute("required", true);
+      const priorityLowBtn = document.createElement("input");
+      priorityLowBtn.setAttribute("type", "radio");
+      priorityLowBtn.setAttribute("value", "low");
+      priorityLowBtn.setAttribute("required", true);
 
-    const priorityMedLabel = document.createElement("label");
-    priorityMedLabel.setAttribute("id", "priority");
-    priorityMedLabel.setAttribute("class", "priority-med");
-    priorityMedLabel.textContent = "Medium";
+      const priorityMedLabel = document.createElement("label");
+      priorityMedLabel.setAttribute("id", "priority");
+      priorityMedLabel.setAttribute("class", "priority-med");
+      priorityMedLabel.textContent = "Medium";
 
-    const priorityMedBtn = document.createElement("input");
-    priorityMedBtn.setAttribute("type", "radio");
-    priorityMedBtn.setAttribute("value", "medium");
-    priorityMedBtn.setAttribute("required", true);
+      const priorityMedBtn = document.createElement("input");
+      priorityMedBtn.setAttribute("type", "radio");
+      priorityMedBtn.setAttribute("value", "medium");
+      priorityMedBtn.setAttribute("required", true);
 
-    const priorityHighLabel = document.createElement("label");
-    priorityHighLabel.setAttribute("id", "priority");
-    priorityHighLabel.setAttribute("class", "priority-high");
-    priorityHighLabel.textContent = "High";
+      const priorityHighLabel = document.createElement("label");
+      priorityHighLabel.setAttribute("id", "priority");
+      priorityHighLabel.setAttribute("class", "priority-high");
+      priorityHighLabel.textContent = "High";
 
-    const priorityHighBtn = document.createElement("input");
-    priorityHighBtn.setAttribute("type", "radio");
-    priorityHighBtn.setAttribute("value", "high");
-    priorityHighBtn.setAttribute("required", true);
+      const priorityHighBtn = document.createElement("input");
+      priorityHighBtn.setAttribute("type", "radio");
+      priorityHighBtn.setAttribute("value", "high");
+      priorityHighBtn.setAttribute("required", true);
 
-    const submitTaskBtn = document.createElement("button");
-    submitTaskBtn.setAttribute("id", "task-submit");
-    submitTaskBtn.textContent = "Submit";
+      const submitTaskBtn = document.createElement("button");
+      submitTaskBtn.setAttribute("id", "task-submit");
+      submitTaskBtn.textContent = "Submit";
 
-    dateDiv.appendChild(dateLabel);
-    dateDiv.appendChild(dateInput);
+      dateDiv.appendChild(dateLabel);
+      dateDiv.appendChild(dateInput);
 
-    priorityDiv.appendChild(priorityLabel);
-    priorityDiv.appendChild(priorityLowLabel);
-    priorityDiv.appendChild(priorityLowBtn);
-    priorityDiv.appendChild(priorityMedLabel);
-    priorityDiv.appendChild(priorityMedBtn);
-    priorityDiv.appendChild(priorityHighLabel);
-    priorityDiv.appendChild(priorityHighBtn);
+      priorityDiv.appendChild(priorityLabel);
+      priorityDiv.appendChild(priorityLowLabel);
+      priorityDiv.appendChild(priorityLowBtn);
+      priorityDiv.appendChild(priorityMedLabel);
+      priorityDiv.appendChild(priorityMedBtn);
+      priorityDiv.appendChild(priorityHighLabel);
+      priorityDiv.appendChild(priorityHighBtn);
 
-    datePriorityDiv.appendChild(dateDiv);
-    datePriorityDiv.appendChild(priorityDiv);
+      datePriorityDiv.appendChild(dateDiv);
+      datePriorityDiv.appendChild(priorityDiv);
 
-    taskForm.appendChild(titleLabel);
-    taskForm.appendChild(titleInput);
-    taskForm.appendChild(descriptionLabel);
-    taskForm.appendChild(descriptionInput);
-    taskForm.appendChild(datePriorityDiv);
+      taskForm.appendChild(titleLabel);
+      taskForm.appendChild(titleInput);
+      taskForm.appendChild(descriptionLabel);
+      taskForm.appendChild(descriptionInput);
+      taskForm.appendChild(datePriorityDiv);
 
-    taskDiv.appendChild(closeBtn);
-    taskDiv.appendChild(taskForm);
-    taskDiv.appendChild(submitTaskBtn);
-    taskModal.appendChild(taskDiv);
-    document.body.appendChild(taskModal);
+      taskDiv.appendChild(closeBtn);
+      taskDiv.appendChild(taskForm);
+      taskDiv.appendChild(submitTaskBtn);
+      taskModal.appendChild(taskDiv);
+      document.body.appendChild(taskModal);
+    }
+  }
+
+  createEditTaskModal() {
+    if (!document.querySelector("#edit-task-modal")) {
+      const editTaskModal = document.createElement("div");
+      editTaskModal.setAttribute("id", "edit-task-modal");
+      editTaskModal.setAttribute("class", "modal");
+
+      const taskDiv = document.createElement("div");
+      taskDiv.setAttribute("class", "modal-content");
+
+      const taskForm = document.createElement("form");
+      taskForm.setAttribute("id", "task-form");
+      taskForm.setAttribute("action", "");
+
+      const closeBtn = document.createElement("span");
+      closeBtn.setAttribute("class", "close");
+      closeBtn.textContent = "×";
+
+      const titleLabel = document.createElement("label");
+      titleLabel.setAttribute("for", "title");
+      titleLabel.textContent = "Task Name";
+
+      const titleInput = document.createElement("input");
+      titleInput.setAttribute("type", "text");
+      titleInput.setAttribute("id", "task-title");
+      titleInput.setAttribute("placeholder", "e.g. Water plants");
+
+      const descriptionLabel = document.createElement("label");
+      descriptionLabel.setAttribute("for", "description");
+      descriptionLabel.textContent = "Description";
+
+      const descriptionInput = document.createElement("textarea");
+      descriptionInput.setAttribute("id", "task-description");
+      descriptionInput.setAttribute(
+        "placeholder",
+        "e.g. water ferns, tomatoes, etc."
+      );
+
+      const datePriorityDiv = document.createElement("div");
+      datePriorityDiv.setAttribute("class", "date-priority");
+
+      const dateDiv = document.createElement("div");
+      dateDiv.setAttribute("class", "date");
+
+      const dateLabel = document.createElement("label");
+      dateLabel.setAttribute("for", "due-date");
+      dateLabel.textContent = "Due Date:";
+
+      const dateInput = document.createElement("input");
+      dateInput.setAttribute("type", "date");
+      dateInput.setAttribute("id", "task-due-date");
+
+      const priorityDiv = document.createElement("div");
+      priorityDiv.setAttribute("class", "task-priority");
+
+      const priorityLabel = document.createElement("label");
+      priorityLabel.setAttribute("for", "priority");
+      priorityLabel.textContent = "Priority:";
+
+      const priorityLowLabel = document.createElement("label");
+      priorityLowLabel.setAttribute("id", "priority");
+      priorityLowLabel.setAttribute("class", "priority-low");
+      priorityLowLabel.textContent = "Low";
+
+      const priorityLowBtn = document.createElement("input");
+      priorityLowBtn.setAttribute("type", "radio");
+      priorityLowBtn.setAttribute("value", "low");
+      priorityLowBtn.setAttribute("required", true);
+
+      const priorityMedLabel = document.createElement("label");
+      priorityMedLabel.setAttribute("id", "priority");
+      priorityMedLabel.setAttribute("class", "priority-med");
+      priorityMedLabel.textContent = "Medium";
+
+      const priorityMedBtn = document.createElement("input");
+      priorityMedBtn.setAttribute("type", "radio");
+      priorityMedBtn.setAttribute("value", "medium");
+      priorityMedBtn.setAttribute("required", true);
+
+      const priorityHighLabel = document.createElement("label");
+      priorityHighLabel.setAttribute("id", "priority");
+      priorityHighLabel.setAttribute("class", "priority-high");
+      priorityHighLabel.textContent = "High";
+
+      const priorityHighBtn = document.createElement("input");
+      priorityHighBtn.setAttribute("type", "radio");
+      priorityHighBtn.setAttribute("value", "high");
+      priorityHighBtn.setAttribute("required", true);
+
+      const submitTaskBtn = document.createElement("button");
+      submitTaskBtn.setAttribute("id", "task-submit");
+      submitTaskBtn.textContent = "Confirm Edit";
+
+      dateDiv.appendChild(dateLabel);
+      dateDiv.appendChild(dateInput);
+
+      priorityDiv.appendChild(priorityLabel);
+      priorityDiv.appendChild(priorityLowLabel);
+      priorityDiv.appendChild(priorityLowBtn);
+      priorityDiv.appendChild(priorityMedLabel);
+      priorityDiv.appendChild(priorityMedBtn);
+      priorityDiv.appendChild(priorityHighLabel);
+      priorityDiv.appendChild(priorityHighBtn);
+
+      datePriorityDiv.appendChild(dateDiv);
+      datePriorityDiv.appendChild(priorityDiv);
+
+      taskForm.appendChild(titleLabel);
+      taskForm.appendChild(titleInput);
+      taskForm.appendChild(descriptionLabel);
+      taskForm.appendChild(descriptionInput);
+      taskForm.appendChild(datePriorityDiv);
+
+      taskDiv.appendChild(closeBtn);
+      taskDiv.appendChild(taskForm);
+      taskDiv.appendChild(submitTaskBtn);
+      editTaskModal.appendChild(taskDiv);
+      document.body.appendChild(editTaskModal);
+    }
+  }
+
+  populateEditModal(task) {
+    const editTaskModal = document.querySelector("#edit-task-modal");
+
+    editTaskModal.querySelector("#task-title").value = task.name;
+    editTaskModal.querySelector("#task-description").value = task.description;
+    editTaskModal.querySelector("#task-due-date").value = task.dueDate;
+    editTaskModal.querySelector(".task-priority").value = task.priority;
+
+    console.log(task.name);
+    console.log(task.description);
+    console.log(task.dueDate);
+    console.log(task.priority);
+
+    editTaskModal.style.display = "block";
+  }
+
+  editTask(index, newName, newDescription, newDueDate, newPriority) {
+    this.tasks[index].name = newName;
+    this.tasks[index].description = newDescription;
+    this.tasks[index].dueDate = newDueDate;
+    this.tasks[index].priority = newPriority;
+
+    this.saveTasksToLocalStorage();
   }
 
   createNewTask() {
@@ -216,6 +364,7 @@ export class TaskList {
     this.tasks.forEach((newTask, i) => {
       const taskItem = document.createElement("div");
       taskItem.setAttribute("class", `task-item-${i}`);
+      taskItem.dataset.index = i;
       taskItem.classList.add(`priority-${newTask.priority}`);
 
       const taskCheckbox = document.createElement("input");
@@ -289,6 +438,32 @@ export class TaskList {
       taskItem.appendChild(taskDetails);
 
       taskList.appendChild(taskItem);
+    });
+    const taskEditButtons = document.querySelectorAll("#task-edit");
+    taskEditButtons.forEach((button, index) => {
+      button.addEventListener("click", () => {
+        const task = this.tasks[index];
+        this.populateEditModal(task);
+
+        document.querySelector("#task-submit").addEventListener("click", () => {
+          const newName = document.querySelector("#task-title").value;
+          const newDescription =
+            document.querySelector("#task-description").value;
+          const newDueDate = document.querySelector("#task-due-date");
+          const newPriority = document.querySelector(
+            `.priority-${priority.textContent}`
+          );
+
+          this.editTaskModal(
+            index,
+            newName,
+            newDescription,
+            newDueDate,
+            newPriority
+          );
+          document.querySelector("#task-modal").style.display = "none";
+        });
+      });
     });
 
     const taskDeleteButtons = document.querySelectorAll("#task-delete");

@@ -1,7 +1,6 @@
 #task-panel {
   color: var(--light-purple);
   padding: calc(1vh + 20px);
-  height: 100vh;
   background-color: hsl(268, 9%, 10%);
   overflow: auto;
 }
@@ -226,7 +225,7 @@ label {
   font-weight: 400;
 }
 
-input[type="text"] {
+.modal-content input[type="text"] {
   font-size: 1rem;
   margin-bottom: 20px;
   padding: 5px;

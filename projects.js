@@ -6,6 +6,21 @@ const taskListElement = new TaskList();
 export class ProjectItem {
   constructor(name) {
     this.name = name;
+    this.tasks = [];
+  }
+
+  addTaskToProject(taskId, name, description, dueDate, priority) {
+    let newTask = new TaskItem(
+      taskId,
+      this.id,
+      name,
+      description,
+      dueDate,
+      priority
+    );
+    this.tasks.push(newTask);
+    this.saveProjectsToLocalStorage();
+    this.createNewProject();
   }
 }
 
@@ -41,7 +56,7 @@ export class ProjectList {
     editModalInput.setAttribute("class", "edit-modal-content");
 
     const closeBtn = document.createElement("span");
-    closeBtn.setAttribute("class", "close");
+    closeBtn.setAttribute("class", "edit-name-close");
     closeBtn.textContent = "Close";
 
     const inputDiv = document.createElement("div");
@@ -142,7 +157,7 @@ export class ProjectList {
 
         editModal.style.display = "block";
 
-        const closeBtn = editModal.querySelector(".close");
+        const closeBtn = editModal.querySelector(".edit-name-close");
         closeBtn.addEventListener("click", () => {
           editModal.style.display = "none";
         });

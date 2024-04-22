@@ -1,7 +1,6 @@
 #project-panel {
   color: var(--light-purple);
   padding: calc(1vh + 20px);
-  height: 100vh;
   background-color: var(--medium-purple);
   overflow: auto;
 }
@@ -120,12 +119,32 @@
   gap: 20px;
   background-color: var(--medium-purple);
   margin: 30vh auto;
-  padding: 40px;
+  padding: 20px 10px 30px 10px;
   border: none;
   width: 30%;
   border-radius: 20px;
   box-shadow: 1px 1px 20px #000000;
 }
+
+.edit-name-close {
+  text-align: right;
+  font-weight: 500;
+  color: var(--light-purple);
+  font-size: 1rem;
+  padding: 5px;
+}
+
+.edit-name-close:hover {
+  color: var(--lightest-purple);
+  cursor: pointer;
+}
+
+.project-name {
+  font-size: 1.2rem;
+  height: 1.5rem;
+  padding: 10px 10px;
+}
+
 .input-div {
   display: flex;
   justify-content: center;
@@ -133,17 +152,22 @@
 }
 
 .input-div button {
-  font-size: 20px;
+  font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
+    source-sans-pro, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
   height: 100%;
-  color: var(--light-purple);
-  background-color: var(--darkest-purple);
   border: none;
-  padding: 5px 20px;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border-radius: 5px;
+  background-color: var(--light-purple);
+  transition: background-color 0.2s ease-in-out;
 }
 
 .input-div button:hover {
-  color: var(--darkest-purple);
-  background-color: var(--light-purple);
+  color: var(--dark-purple);
+  background-color: var(--lightest-purple);
   cursor: pointer;
 }
 
