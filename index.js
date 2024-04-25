@@ -32,8 +32,8 @@ addProjectBtn.addEventListener("click", () => {
   }
 });
 
-DOMmanipulator.createNewTask();
+mainTaskList.createNewTask();
 DOMmanipulator.createTaskModal();
 DOMmanipulator.renderHTML();
-DOMmanipulator.createNewProject();
+mainProjectList.createNewProject();
 DOMmanipulator.showEditProjectNameModal();
