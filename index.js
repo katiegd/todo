@@ -1,5 +1,9 @@
-import { ProjectList } from "./projects.js";
-import { TaskList } from "./tasks.js";
+// import { ProjectList } from "./projects.js";
+// import { TaskList } from "./tasks.js";
+
+import { DOMmanipulator } from "./toDoAppFunctions-class.js";
+import { ProjectList } from "./toDoAppFunctions-class.js";
+import { TaskList } from "./toDoAppFunctions-class.js";
 
 const mainTaskList = new TaskList();
 const mainProjectList = new ProjectList();
@@ -28,8 +32,8 @@ addProjectBtn.addEventListener("click", () => {
   }
 });
 
-mainTaskList.createNewTask();
-mainTaskList.createTaskModal();
-mainTaskList.renderHTML();
-mainProjectList.createNewProject();
-mainProjectList.showEditProjectNameModal();
+DOMmanipulator.createNewTask();
+DOMmanipulator.createTaskModal();
+DOMmanipulator.renderHTML();
+DOMmanipulator.createNewProject();
+DOMmanipulator.showEditProjectNameModal();
