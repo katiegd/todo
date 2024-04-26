@@ -1,7 +1,17 @@
 export class DOMmanipulator {
-  static renderHTML() {}
+  renderHTML() {
+    const addTaskModal = document.querySelector("#task-modal");
+    const addNewTaskBtn = document.querySelector("#add-task");
 
-  static createTaskModal() {
+    addTaskModal.style.display = "none";
+
+    addNewTaskBtn.addEventListener("click", () => {
+      document.getElementById("task-form").reset();
+      addTaskModal.style.display = "block";
+    });
+  }
+
+  createTaskModal() {
     if (!document.querySelector("#task-modal")) {
       const taskModal = document.createElement("div");
       taskModal.setAttribute("id", "task-modal");
@@ -121,7 +131,64 @@ export class DOMmanipulator {
     }
   }
 
-  static createEditTaskModal() {
+  taskModalEventListeners() {
+    const priorityLowBtn = document.querySelector(".priority-low");
+    const priorityMedBtn = document.querySelector(".priority-med");
+    const priorityHighBtn = document.querySelector(".priority-high");
+    const closeBtn = document.querySelector(".close");
+    const submitTaskBtn = document.querySelector("#task-submit");
+    const addTaskModal = document.querySelector("#task-modal");
+
+    priorityLowBtn.addEventListener("click", () => {
+      priorityLowBtn.classList.toggle("low-active");
+      priorityMedBtn.classList.remove("med-active");
+      priorityHighBtn.classList.remove("high-active");
+    });
+
+    priorityMedBtn.addEventListener("click", () => {
+      priorityMedBtn.classList.toggle("med-active");
+      priorityLowBtn.classList.remove("low-active");
+      priorityHighBtn.classList.remove("high-active");
+    });
+
+    priorityHighBtn.addEventListener("click", () => {
+      priorityHighBtn.classList.toggle("high-active");
+      priorityLowBtn.classList.remove("low-active");
+      priorityMedBtn.classList.remove("med-active");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      console.log("BOOPP");
+      addTaskModal.style.display = "none";
+    });
+
+    window.onclick = function (event) {
+      if (event.target == addTaskModal) {
+        addTaskModal.style.display = "none";
+      }
+    };
+
+    submitTaskBtn.addEventListener("click", () => {
+      let taskTitleInput = document.querySelector("#task-title").value;
+      let taskDescriptionInput =
+        document.querySelector("#task-description").value;
+      let taskDueDateInput = document.querySelector("#task-due-date").value;
+      let taskPriorityInput =
+        document.querySelector('[class*="active"]').textContent;
+      TaskList.addTask(
+        taskTitleInput,
+        taskDescriptionInput,
+        taskDueDateInput,
+        taskPriorityInput
+      );
+
+      document.getElementById("task-form").reset();
+
+      addTaskModal.style.display = "none";
+    });
+  }
+
+  createEditTaskModal() {
     if (!document.querySelector("#edit-task-modal")) {
       const taskModal = document.createElement("div");
       taskModal.setAttribute("id", "edit-task-modal");
@@ -241,7 +308,7 @@ export class DOMmanipulator {
     }
   }
 
-  static populateEditModal(task) {
+  populateEditModal(task) {
     const editTaskModal = document.querySelector("#edit-task-modal");
 
     editTaskModal.querySelector("#task-title").value = task.name;
@@ -275,44 +342,52 @@ export class DOMmanipulator {
     this.saveTasksToLocalStorage();
   }
 
-  static createEditProjectNameModal() {
-    const editModal = document.createElement("div");
-    editModal.setAttribute("id", "edit-modal");
-    editModal.setAttribute("class", "edit-modal");
+  createEditProjectNameModal() {
+    if (!document.querySelector("#edit-modal")) {
+      const editModal = document.createElement("div");
+      editModal.setAttribute("id", "edit-modal");
+      editModal.setAttribute("class", "edit-modal");
 
-    const editModalInput = document.createElement("div");
-    editModalInput.setAttribute("class", "edit-modal-content");
+      const editModalInput = document.createElement("div");
+      editModalInput.setAttribute("class", "edit-modal-content");
 
-    const closeBtn = document.createElement("span");
-    closeBtn.setAttribute("class", "edit-name-close");
-    closeBtn.textContent = "Close";
+      const closeBtn = document.createElement("span");
+      closeBtn.setAttribute("class", "edit-name-close");
+      closeBtn.textContent = "Close";
 
-    const inputDiv = document.createElement("div");
-    inputDiv.setAttribute("class", "input-div");
+      const inputDiv = document.createElement("div");
+      inputDiv.setAttribute("class", "input-div");
 
-    const editProjectNameInput = document.createElement("input");
-    editProjectNameInput.setAttribute("type", "text");
-    editProjectNameInput.setAttribute("class", "project-name");
-    const projectName = document.querySelector("#project-item-name");
-    if (projectName) {
-      editProjectNameInput.value = projectName.textContent;
+      const editProjectNameInput = document.createElement("input");
+      editProjectNameInput.setAttribute("type", "text");
+      editProjectNameInput.setAttribute("class", "project-name");
+      const projectName = document.querySelector("#project-item-name");
+      if (projectName) {
+        editProjectNameInput.value = projectName.textContent;
+      }
+
+      const submitEditButton = document.createElement("button");
+      submitEditButton.setAttribute("id", "edit-project-name-submit");
+      submitEditButton.textContent = "Submit";
+
+      inputDiv.appendChild(editProjectNameInput);
+      inputDiv.appendChild(submitEditButton);
+      editModalInput.appendChild(closeBtn);
+      editModalInput.appendChild(inputDiv);
+
+      editModal.appendChild(editModalInput);
+
+      document.body.appendChild(editModal);
     }
-
-    const submitEditButton = document.createElement("button");
-    submitEditButton.setAttribute("id", "edit-project-name-submit");
-    submitEditButton.textContent = "Submit";
-
-    inputDiv.appendChild(editProjectNameInput);
-    inputDiv.appendChild(submitEditButton);
-    editModalInput.appendChild(closeBtn);
-    editModalInput.appendChild(inputDiv);
-
-    editModal.appendChild(editModalInput);
-
-    document.body.appendChild(editModal);
   }
 
-  static showEditProjectNameModal() {
+  updateProjectName(projects, index, newName) {
+    if (projects[index]) {
+      projects[index].name = newName;
+    }
+  }
+
+  showEditProjectNameModal() {
     const editModal = document.querySelector("#edit-modal");
     const launchEditModalBtn = document.querySelectorAll("#project-edit");
 
@@ -338,19 +413,14 @@ export class DOMmanipulator {
     const submitEditButton = document.querySelector(
       "#edit-project-name-submit"
     );
-    submitEditButton.addEventListener("click", () => {
-      const newName = document.querySelector(".project-name").value;
-      const index = editModal.dataset.index;
-      const projectItemNames = document.querySelectorAll(`.project-${index}`);
-      projectItemNames.forEach((projectItemName) => {
-        projectItemName.textContent = newName;
-        this.projects[index].name = newName;
-      });
-      editModal.style.display = "none";
-      this.saveProjectsToLocalStorage();
-    });
+    submitEditButton.addEventListener(
+      "click",
+      ProjectList.submitNewProjectName
+    );
   }
 }
+
+const DOMController = new DOMmanipulator();
 
 // create the project item constructor
 export class ProjectItem {
@@ -359,18 +429,11 @@ export class ProjectItem {
     this.tasks = [];
   }
 
-  addTaskToProject(name, description, dueDate, priority, project) {
-    let newTask = new TaskItem(
-      taskId,
-      name,
-      description,
-      dueDate,
-      priority,
-      project
-    );
+  addTaskToProject(name, description, dueDate, priority) {
+    let newTask = new TaskItem(name, description, dueDate, priority);
     this.tasks.push(newTask);
     ProjectList.saveProjectsToLocalStorage();
-    DOMmanipulator.createNewProject();
+    DOMController.createNewProject();
   }
 }
 
@@ -378,9 +441,8 @@ export class ProjectItem {
 export class ProjectList {
   constructor() {
     this.projects = [];
-    this.newProject = [1, 2, 3];
     this.projects = this.loadProjectsFromLocalStorage() || [];
-    DOMmanipulator.createEditProjectNameModal();
+    DOMController.createEditProjectNameModal();
     this.createNewProject();
   }
 
@@ -388,14 +450,14 @@ export class ProjectList {
     let newProject = new ProjectItem(name);
     this.projects.push(newProject);
     this.saveProjectsToLocalStorage();
-    DOMmanipulator.createNewProject();
+    this.createNewProject();
   }
 
   removeProject(index) {
     this.projects.splice(index, 1);
     this.saveProjectsToLocalStorage();
-    DOMmanipulator.createNewProject();
-    taskListElement.removeProjectTasks();
+    this.createNewProject();
+    TaskList.removeProjectTasks();
   }
 
   loadProjectsFromLocalStorage() {
@@ -454,6 +516,32 @@ export class ProjectList {
       projectList.appendChild(projectItem);
       projectPanel.appendChild(projectList);
     });
+
+    const projectItemBtn = document.querySelectorAll("#project-item");
+    projectItemBtn.forEach((item) => {
+      item.addEventListener("click", (e) => {
+        this.loadProjectTasks(e);
+      });
+    });
+
+    const projectDeleteButtons = document.querySelectorAll("#project-delete");
+    projectDeleteButtons.forEach((button, i) => {
+      button.addEventListener("click", () => {
+        this.removeProject(i);
+      });
+    });
+  }
+
+  submitNewProjectName() {
+    const newName = document.querySelector(".project-name").value;
+    const index = editModal.dataset.index;
+    const projectItemNames = document.querySelectorAll(`.project-${index}`);
+    projectItemNames.forEach((projectItemName) => {
+      projectItemName.textContent = newName;
+      ProjectList.updateProjectName(projects, index, newName);
+    });
+    editModal.style.display = "none";
+    this.saveProjectsToLocalStorage();
   }
 }
 
@@ -473,8 +561,8 @@ export class TaskList {
   constructor() {
     this.tasks = [];
     this.tasks = this.loadTasksFromLocalStorage() || [];
-    DOMmanipulator.createTaskModal();
-    DOMmanipulator.createEditTaskModal();
+    DOMController.createTaskModal();
+    DOMController.createEditTaskModal();
   }
 
   addTask(projectId, name, description, dueDate, priority, checked = false) {

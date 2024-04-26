@@ -7,6 +7,7 @@ import { TaskList } from "./toDoAppFunctions-class.js";
 
 const mainTaskList = new TaskList();
 const mainProjectList = new ProjectList();
+const DOMController = new DOMmanipulator();
 
 const projectNameInput = document.querySelector("#project-name-input");
 const addProjectBtn = document.querySelector("#add-project");
@@ -33,7 +34,6 @@ addProjectBtn.addEventListener("click", () => {
 });
 
 mainTaskList.createNewTask();
-DOMmanipulator.createTaskModal();
-DOMmanipulator.renderHTML();
+DOMController.renderHTML();
 mainProjectList.createNewProject();
-DOMmanipulator.showEditProjectNameModal();
+DOMController.showEditProjectNameModal();
