@@ -277,7 +277,7 @@ form {
   background-color: hsl(120, 100%, 68%);
 }
 
-.priority-med {
+.priority-medium {
   font-size: 0.8rem;
   font-weight: 500;
 
@@ -289,7 +289,7 @@ form {
   transition: background-color 0.3s ease-in-out;
 }
 
-.med-active {
+.medium-active {
   color: var(--medium-purple);
   background-color: hsl(62, 99%, 65%);
 }
@@ -319,7 +319,7 @@ form {
   cursor: pointer;
 }
 
-.priority-med:hover {
+.priority-medium:hover {
   color: var(--darkest-purple);
   background-color: hsl(62, 99%, 65%);
   border: 1px solid hsl(62, 99%, 65%);

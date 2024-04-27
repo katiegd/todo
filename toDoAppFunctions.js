@@ -6,9 +6,22 @@ export class DOMmanipulator {
     addTaskModal.style.display = "none";
 
     addNewTaskBtn.addEventListener("click", () => {
-      document.getElementById("task-form").reset();
+      this.resetForm();
       addTaskModal.style.display = "block";
     });
+  }
+
+  resetForm() {
+    const taskForm = document.querySelector("#task-form");
+    const priorityLowBtn = document.querySelector(".priority-low");
+    const priorityMedBtn = document.querySelector(".priority-medium");
+    const priorityHighBtn = document.querySelector(".priority-high");
+
+    priorityLowBtn.classList.remove("low-active");
+    priorityMedBtn.classList.remove("medium-active");
+    priorityHighBtn.classList.remove("high-active");
+
+    taskForm.reset();
   }
 
   createTaskModal() {
@@ -76,16 +89,18 @@ export class DOMmanipulator {
 
       const priorityLowBtn = document.createElement("input");
       priorityLowBtn.setAttribute("type", "radio");
+      priorityLowBtn.setAttribute("checked", false);
       priorityLowBtn.setAttribute("value", "low");
       priorityLowBtn.setAttribute("required", true);
 
       const priorityMedLabel = document.createElement("label");
       priorityMedLabel.setAttribute("id", "priority");
-      priorityMedLabel.setAttribute("class", "priority-med");
+      priorityMedLabel.setAttribute("class", "priority-medium");
       priorityMedLabel.textContent = "Medium";
 
       const priorityMedBtn = document.createElement("input");
       priorityMedBtn.setAttribute("type", "radio");
+      priorityMedBtn.setAttribute("checked", false);
       priorityMedBtn.setAttribute("value", "medium");
       priorityMedBtn.setAttribute("required", true);
 
@@ -96,6 +111,7 @@ export class DOMmanipulator {
 
       const priorityHighBtn = document.createElement("input");
       priorityHighBtn.setAttribute("type", "radio");
+      priorityHighBtn.setAttribute("checked", false);
       priorityHighBtn.setAttribute("value", "high");
       priorityHighBtn.setAttribute("required", true);
 
@@ -145,7 +161,7 @@ export class DOMmanipulator {
 
   taskModalEventListeners() {
     const priorityLowBtn = document.querySelector(".priority-low");
-    const priorityMedBtn = document.querySelector(".priority-med");
+    const priorityMedBtn = document.querySelector(".priority-medium");
     const priorityHighBtn = document.querySelector(".priority-high");
     const closeBtn = document.querySelector(".close");
     const submitTaskBtn = document.querySelector("#task-submit");
@@ -153,20 +169,29 @@ export class DOMmanipulator {
 
     priorityLowBtn.addEventListener("click", () => {
       priorityLowBtn.classList.toggle("low-active");
-      priorityMedBtn.classList.remove("med-active");
+      priorityLowBtn.setAttribute("checked", true);
+      priorityMedBtn.classList.remove("medium-active");
+      priorityMedBtn.setAttribute("checked", false);
       priorityHighBtn.classList.remove("high-active");
+      priorityHighBtn.setAttribute("checked", false);
     });
 
     priorityMedBtn.addEventListener("click", () => {
-      priorityMedBtn.classList.toggle("med-active");
+      priorityMedBtn.classList.toggle("medium-active");
+      priorityMedBtn.setAttribute("checked", true);
       priorityLowBtn.classList.remove("low-active");
+      priorityLowBtn.setAttribute("checked", false);
       priorityHighBtn.classList.remove("high-active");
+      priorityHighBtn.setAttribute("checked", false);
     });
 
     priorityHighBtn.addEventListener("click", () => {
       priorityHighBtn.classList.toggle("high-active");
+      priorityHighBtn.setAttribute("checked", true);
       priorityLowBtn.classList.remove("low-active");
-      priorityMedBtn.classList.remove("med-active");
+      priorityLowBtn.setAttribute("checked", false);
+      priorityMedBtn.classList.remove("medium-active");
+      priorityMedBtn.setAttribute("checked", false);
     });
 
     closeBtn.addEventListener("click", () => {
@@ -194,7 +219,6 @@ export class DOMmanipulator {
       );
 
       document.getElementById("task-form").reset();
-
       addTaskModal.style.display = "none";
     });
   }
@@ -288,7 +312,7 @@ export class DOMmanipulator {
 
       const priorityMedLabel = document.createElement("label");
       priorityMedLabel.setAttribute("id", "priority");
-      priorityMedLabel.setAttribute("class", "priority-med");
+      priorityMedLabel.setAttribute("class", "priority-medium");
       priorityMedLabel.textContent = "medium";
 
       const priorityMedBtn = document.createElement("input");
@@ -364,6 +388,8 @@ export class DOMmanipulator {
     taskListInstance.tasks[index].priority = newPriority;
 
     taskListInstance.saveTasksToLocalStorage();
+
+    taskListInstance.createNewTask();
   }
 
   createEditProjectNameModal() {
@@ -604,6 +630,8 @@ export class TaskList {
       priority,
       checked
     );
+    const taskList = document.querySelector("#task-list");
+    taskList.innerHTML = "";
     this.tasks.push(newTask);
     this.saveTasksToLocalStorage();
     this.createNewTask();
@@ -611,8 +639,6 @@ export class TaskList {
 
   createNewTask() {
     const taskList = document.querySelector("#task-list");
-
-    taskList.innerHTML = "";
 
     this.tasks.forEach((newTask, i) => {
       const taskItem = document.createElement("div");
@@ -698,19 +724,39 @@ export class TaskList {
         const task = this.tasks[index];
         DOMController.populateEditModal(task);
 
-        document
-          .querySelector("#edit-task-submit")
-          .addEventListener("click", () => {
-            const newName = document.querySelector("#task-title").value;
-            const newDescription =
-              document.querySelector("#task-description").value;
-            const newDueDate = document.querySelector("#task-due-date");
-            const newPriority = document.querySelector(
-              `.priority-${priority.textContent}`
-            );
+        const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
+        editTaskSubmitBtn.addEventListener("click", () => {
+          const taskItem = document.querySelector(`.task-item-${index}`);
+          taskItem.dataset.index = index;
 
-            document.querySelector("#edit-task-modal").style.display = "none";
-          });
+          const newName = document.querySelector("#task-title").value;
+          const newDescription =
+            document.querySelector("#task-description").value;
+          const newDueDate = document.querySelector("#task-due-date").value;
+          const newPriority = document.querySelector(
+            `[name="priority"]:checked`
+          ).value;
+
+          console.log(newName);
+          console.log(newDescription);
+          console.log(newDueDate);
+          console.log(newPriority);
+
+          DOMController.editTask(
+            index,
+            newName,
+            newDescription,
+            newDueDate,
+            newPriority
+          );
+
+          document.querySelector("#edit-task-modal").style.display = "none";
+        });
+
+        const taskEditCloseBtn = document.querySelector(".edit-close");
+        taskEditCloseBtn.addEventListener("click", () => {
+          document.querySelector("#edit-task-modal").style.display = "none";
+        });
       });
     });
 
