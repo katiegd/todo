@@ -1,5 +1,5 @@
 export class DOMmanipulator {
-  renderHTML() {
+  addNewTask() {
     const addTaskModal = document.querySelector("#task-modal");
     const addNewTaskBtn = document.querySelector("#add-task");
 
@@ -131,6 +131,18 @@ export class DOMmanipulator {
     }
   }
 
+  setDateToToday() {
+    const dateInput = document.querySelector("#task-due-date");
+    const todayDate = new Date();
+
+    dateInput.value =
+      todayDate.getFullYear().toString() +
+      "-" +
+      (todayDate.getMonth() + 1).toString().padStart(2, 0) +
+      "-" +
+      todayDate.getDate().toString().padStart(2, 0);
+  }
+
   taskModalEventListeners() {
     const priorityLowBtn = document.querySelector(".priority-low");
     const priorityMedBtn = document.querySelector(".priority-med");
@@ -158,7 +170,6 @@ export class DOMmanipulator {
     });
 
     closeBtn.addEventListener("click", () => {
-      console.log("BOOPP");
       addTaskModal.style.display = "none";
     });
 
@@ -175,7 +186,7 @@ export class DOMmanipulator {
       let taskDueDateInput = document.querySelector("#task-due-date").value;
       let taskPriorityInput =
         document.querySelector('[class*="active"]').textContent;
-      TaskList.addTask(
+      taskListInstance.addTask(
         taskTitleInput,
         taskDescriptionInput,
         taskDueDateInput,
@@ -186,6 +197,25 @@ export class DOMmanipulator {
 
       addTaskModal.style.display = "none";
     });
+  }
+
+  submitTask() {
+    let taskTitleInput = document.querySelector("#task-title").value;
+    let taskDescriptionInput =
+      document.querySelector("#task-description").value;
+    let taskDueDateInput = document.querySelector("#task-due-date").value;
+    let taskPriorityInput =
+      document.querySelector('[class*="active"]').textContent;
+    taskListInstance.addTask(
+      taskTitleInput,
+      taskDescriptionInput,
+      taskDueDateInput,
+      taskPriorityInput
+    );
+
+    document.getElementById("task-form").reset();
+
+    addTaskModal.style.display = "none";
   }
 
   createEditTaskModal() {
@@ -324,22 +354,16 @@ export class DOMmanipulator {
       );
     }
 
-    console.log(task.name);
-    console.log(task.description);
-    console.log(task.dueDate);
-    console.log(task.priority);
-    console.log(taskPriorityAddClass);
-
     editTaskModal.style.display = "block";
   }
 
   editTask(index, newName, newDescription, newDueDate, newPriority) {
-    this.tasks[index].name = newName;
-    this.tasks[index].description = newDescription;
-    this.tasks[index].dueDate = newDueDate;
-    this.tasks[index].priority = newPriority;
+    taskListInstance.tasks[index].name = newName;
+    taskListInstance.tasks[index].description = newDescription;
+    taskListInstance.tasks[index].dueDate = newDueDate;
+    taskListInstance.tasks[index].priority = newPriority;
 
-    this.saveTasksToLocalStorage();
+    taskListInstance.saveTasksToLocalStorage();
   }
 
   createEditProjectNameModal() {
@@ -381,42 +405,15 @@ export class DOMmanipulator {
     }
   }
 
-  updateProjectName(projects, index, newName) {
-    if (projects[index]) {
-      projects[index].name = newName;
-    }
-  }
-
-  showEditProjectNameModal() {
-    const editModal = document.querySelector("#edit-modal");
-    const launchEditModalBtn = document.querySelectorAll("#project-edit");
-
-    launchEditModalBtn.forEach((button) => {
-      button.addEventListener("click", (e) => {
-        const projectItem = e.currentTarget.closest("#project-item");
-        const index = projectItem.dataset.index;
-        editModal.dataset.index = index;
-        const projectNameID = document.querySelector(
-          `.project-${index}`
-        ).textContent;
-        const projectNameInput = document.querySelector(".project-name");
-        projectNameInput.value = projectNameID;
-
-        editModal.style.display = "block";
-
-        const closeBtn = editModal.querySelector(".edit-name-close");
-        closeBtn.addEventListener("click", () => {
-          editModal.style.display = "none";
-        });
-      });
+  updateProjectName(index, newName) {
+    return new Promise((resolve, reject) => {
+      if (projectListInstance.projects[index]) {
+        projectListInstance.projects[index].name = newName;
+        resolve(); // Resolve the promise once the update is done
+      } else {
+        reject(new Error("Project not found"));
+      }
     });
-    const submitEditButton = document.querySelector(
-      "#edit-project-name-submit"
-    );
-    submitEditButton.addEventListener(
-      "click",
-      ProjectList.submitNewProjectName
-    );
   }
 }
 
@@ -432,7 +429,7 @@ export class ProjectItem {
   addTaskToProject(name, description, dueDate, priority) {
     let newTask = new TaskItem(name, description, dueDate, priority);
     this.tasks.push(newTask);
-    ProjectList.saveProjectsToLocalStorage();
+    projectListInstance.saveProjectsToLocalStorage();
     DOMController.createNewProject();
   }
 }
@@ -457,7 +454,7 @@ export class ProjectList {
     this.projects.splice(index, 1);
     this.saveProjectsToLocalStorage();
     this.createNewProject();
-    TaskList.removeProjectTasks();
+    taskListInstance.removeProjectTasks();
   }
 
   loadProjectsFromLocalStorage() {
@@ -470,8 +467,7 @@ export class ProjectList {
     localStorage.setItem("projects", projectsJson);
   }
 
-  loadProjectTasks(e) {
-    const index = e.currentTarget.dataset.index;
+  loadProjectTasks(index) {
     let taskName = document.querySelector(".task-name-h1");
     const projectName = document.querySelector(`.project-${index}`).textContent;
     taskName.textContent = projectName;
@@ -518,9 +514,9 @@ export class ProjectList {
     });
 
     const projectItemBtn = document.querySelectorAll("#project-item");
-    projectItemBtn.forEach((item) => {
-      item.addEventListener("click", (e) => {
-        this.loadProjectTasks(e);
+    projectItemBtn.forEach((item, index) => {
+      item.addEventListener("click", () => {
+        this.loadProjectTasks(index);
       });
     });
 
@@ -530,22 +526,56 @@ export class ProjectList {
         this.removeProject(i);
       });
     });
+
+    const editModal = document.querySelector("#edit-modal");
+    const launchEditModalBtn = document.querySelectorAll("#project-edit");
+
+    launchEditModalBtn.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const projectItem = e.currentTarget.closest("#project-item");
+        const index = projectItem.dataset.index;
+        editModal.dataset.index = index;
+        const projectNameID = document.querySelector(
+          `.project-${index}`
+        ).textContent;
+        const projectNameInput = document.querySelector(".project-name");
+        projectNameInput.value = projectNameID;
+
+        editModal.style.display = "block";
+
+        const closeBtn = editModal.querySelector(".edit-name-close");
+        closeBtn.addEventListener("click", () => {
+          editModal.style.display = "none";
+        });
+      });
+    });
+    const submitEditButton = document.querySelector(
+      "#edit-project-name-submit"
+    );
+    submitEditButton.addEventListener("click", this.submitNewProjectName);
   }
 
-  submitNewProjectName() {
+  async submitNewProjectName() {
+    const editModal = document.querySelector("#edit-modal");
     const newName = document.querySelector(".project-name").value;
     const index = editModal.dataset.index;
     const projectItemNames = document.querySelectorAll(`.project-${index}`);
-    projectItemNames.forEach((projectItemName) => {
+
+    projectItemNames.forEach(async (projectItemName) => {
       projectItemName.textContent = newName;
-      ProjectList.updateProjectName(projects, index, newName);
+      try {
+        await DOMController.updateProjectName(index, newName);
+        editModal.style.display = "none";
+        projectListInstance.saveProjectsToLocalStorage();
+      } catch (error) {
+        console.log(error);
+      }
+      projectListInstance.loadProjectTasks(index);
     });
-    editModal.style.display = "none";
-    this.saveProjectsToLocalStorage();
   }
 }
 
-let projectList = new ProjectList();
+const projectListInstance = new ProjectList();
 
 // create the task item constructor
 export class TaskItem {
@@ -666,7 +696,7 @@ export class TaskList {
     taskEditButtons.forEach((button, index) => {
       button.addEventListener("click", () => {
         const task = this.tasks[index];
-        this.populateEditModal(task);
+        DOMController.populateEditModal(task);
 
         document
           .querySelector("#edit-task-submit")
@@ -708,3 +738,5 @@ export class TaskList {
     localStorage.setItem("tasks", tasksJson);
   }
 }
+
+const taskListInstance = new TaskList();
