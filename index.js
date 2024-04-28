@@ -34,6 +34,7 @@ addProjectBtn.addEventListener("click", () => {
 });
 
 DOMController.addNewTask();
+DOMController.submitTask();
 DOMController.taskModalEventListeners();
 mainProjectList.createNewProject();
 mainTaskList.createNewTask();

@@ -204,32 +204,22 @@ export class DOMmanipulator {
       }
     };
 
-    submitTaskBtn.addEventListener("click", () => {
-      let taskTitleInput = document.querySelector("#task-title").value;
-      let taskDescriptionInput =
-        document.querySelector("#task-description").value;
-      let taskDueDateInput = document.querySelector("#task-due-date").value;
-      let taskPriorityInput =
-        document.querySelector('[class*="active"]').textContent;
-      taskListInstance.addTask(
-        taskTitleInput,
-        taskDescriptionInput,
-        taskDueDateInput,
-        taskPriorityInput
-      );
-
-      document.getElementById("task-form").reset();
-      addTaskModal.style.display = "none";
-    });
+    submitTaskBtn.addEventListener("click", this.submitTask);
   }
 
   submitTask() {
+    const addTaskModal = document.querySelector("#task-modal");
     let taskTitleInput = document.querySelector("#task-title").value;
     let taskDescriptionInput =
       document.querySelector("#task-description").value;
     let taskDueDateInput = document.querySelector("#task-due-date").value;
-    let taskPriorityInput =
-      document.querySelector('[class*="active"]').textContent;
+    let activeRadioButton = document.querySelector('[class*="active"]');
+
+    if (!activeRadioButton || !activeRadioButton.textContent) {
+      return;
+    }
+    let taskPriorityInput = activeRadioButton.textContent;
+
     taskListInstance.addTask(
       taskTitleInput,
       taskDescriptionInput,
@@ -240,6 +230,7 @@ export class DOMmanipulator {
     document.getElementById("task-form").reset();
 
     addTaskModal.style.display = "none";
+    taskListInstance.createNewTask();
   }
 
   createEditTaskModal() {
@@ -639,6 +630,7 @@ export class TaskList {
 
   createNewTask() {
     const taskList = document.querySelector("#task-list");
+    taskList.innerHTML = "";
 
     this.tasks.forEach((newTask, i) => {
       const taskItem = document.createElement("div");
