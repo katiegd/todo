@@ -13,15 +13,40 @@ export class DOMmanipulator {
 
   resetForm() {
     const taskForm = document.querySelector("#task-form");
-    const priorityLowBtn = document.querySelector(".priority-low");
-    const priorityMedBtn = document.querySelector(".priority-medium");
-    const priorityHighBtn = document.querySelector(".priority-high");
+    const priorityLowBtn = document.querySelector(".priority-low-btn");
+    const priorityMedBtn = document.querySelector(".priority-medium-btn");
+    const priorityHighBtn = document.querySelector(".priority-high-btn");
 
     priorityLowBtn.classList.remove("low-active");
+    priorityLowBtn.setAttribute("checked", "false");
     priorityMedBtn.classList.remove("medium-active");
+    priorityMedBtn.setAttribute("checked", "false");
     priorityHighBtn.classList.remove("high-active");
+    priorityHighBtn.setAttribute("checked", "false");
 
     taskForm.reset();
+
+    const editTaskModalForm = document.querySelector(
+      "#edit-task-modal #task-form"
+    );
+    const editPriorityLowBtn = document.querySelector(
+      "#edit-task-modal .priority-low-btn"
+    );
+    const editPriorityMedBtn = document.querySelector(
+      "#edit-task-modal .priority-medium-btn"
+    );
+    const editPriorityHighBtn = document.querySelector(
+      "#edit-task-modal .priority-high-btn"
+    );
+
+    editPriorityLowBtn.classList.remove("low-active");
+    editPriorityLowBtn.setAttribute("checked", "false");
+    editPriorityMedBtn.classList.remove("medium-active");
+    editPriorityMedBtn.setAttribute("checked", "false");
+    editPriorityHighBtn.classList.remove("high-active");
+    editPriorityHighBtn.setAttribute("checked", "false");
+
+    editTaskModalForm.reset();
   }
 
   createTaskModal() {
@@ -84,7 +109,7 @@ export class DOMmanipulator {
 
       const priorityLowLabel = document.createElement("label");
       priorityLowLabel.setAttribute("id", "priority");
-      priorityLowLabel.setAttribute("class", "priority-low");
+      priorityLowLabel.setAttribute("class", "priority-low-btn");
       priorityLowLabel.textContent = "Low";
 
       const priorityLowBtn = document.createElement("input");
@@ -95,7 +120,7 @@ export class DOMmanipulator {
 
       const priorityMedLabel = document.createElement("label");
       priorityMedLabel.setAttribute("id", "priority");
-      priorityMedLabel.setAttribute("class", "priority-medium");
+      priorityMedLabel.setAttribute("class", "priority-medium-btn");
       priorityMedLabel.textContent = "Medium";
 
       const priorityMedBtn = document.createElement("input");
@@ -106,7 +131,7 @@ export class DOMmanipulator {
 
       const priorityHighLabel = document.createElement("label");
       priorityHighLabel.setAttribute("id", "priority");
-      priorityHighLabel.setAttribute("class", "priority-high");
+      priorityHighLabel.setAttribute("class", "priority-high-btn");
       priorityHighLabel.textContent = "High";
 
       const priorityHighBtn = document.createElement("input");
@@ -160,9 +185,9 @@ export class DOMmanipulator {
   }
 
   taskModalEventListeners() {
-    const priorityLowBtn = document.querySelector(".priority-low");
-    const priorityMedBtn = document.querySelector(".priority-medium");
-    const priorityHighBtn = document.querySelector(".priority-high");
+    const priorityLowBtn = document.querySelector(".priority-low-btn");
+    const priorityMedBtn = document.querySelector(".priority-medium-btn");
+    const priorityHighBtn = document.querySelector(".priority-high-btn");
     const closeBtn = document.querySelector(".close");
     const submitTaskBtn = document.querySelector("#task-submit");
     const addTaskModal = document.querySelector("#task-modal");
@@ -207,6 +232,49 @@ export class DOMmanipulator {
     submitTaskBtn.addEventListener("click", this.submitTask);
   }
 
+  editTaskModalEventListeners() {
+    const editTaskModal = document.querySelector("#edit-task-modal");
+    const priorityLowBtn = editTaskModal.querySelector(".priority-low-btn");
+    const priorityLowRadio = editTaskModal.querySelector(
+      'input[type="radio"][value="low"]'
+    );
+    const priorityMedBtn = editTaskModal.querySelector(".priority-medium-btn");
+    const priorityMedRadio = editTaskModal.querySelector(
+      'input[type="radio"][value="medium"]'
+    );
+    const priorityHighBtn = editTaskModal.querySelector(".priority-high-btn");
+    const priorityHighRadio = editTaskModal.querySelector(
+      'input[type="radio"][value="high"]'
+    );
+
+    priorityLowBtn.addEventListener("click", () => {
+      priorityLowBtn.classList.add("low-active");
+      priorityLowRadio.setAttribute("checked", true);
+      priorityMedBtn.classList.remove("medium-active");
+      priorityMedRadio.setAttribute("checked", false);
+      priorityHighBtn.classList.remove("high-active");
+      priorityHighRadio.setAttribute("checked", false);
+    });
+
+    priorityMedBtn.addEventListener("click", () => {
+      priorityMedBtn.classList.add("medium-active");
+      priorityMedRadio.setAttribute("checked", true);
+      priorityLowBtn.classList.remove("low-active");
+      priorityLowRadio.setAttribute("checked", false);
+      priorityHighBtn.classList.remove("high-active");
+      priorityHighRadio.setAttribute("checked", false);
+    });
+
+    priorityHighBtn.addEventListener("click", () => {
+      priorityHighBtn.classList.add("high-active");
+      priorityHighRadio.setAttribute("checked", true);
+      priorityLowBtn.classList.remove("low-active");
+      priorityLowRadio.setAttribute("checked", false);
+      priorityMedBtn.classList.remove("medium-active");
+      priorityMedRadio.setAttribute("checked", false);
+    });
+  }
+
   submitTask() {
     const addTaskModal = document.querySelector("#task-modal");
     let taskTitleInput = document.querySelector("#task-title").value;
@@ -230,7 +298,7 @@ export class DOMmanipulator {
     document.getElementById("task-form").reset();
 
     addTaskModal.style.display = "none";
-    taskListInstance.createNewTask();
+    taskListInstance.renderNewTask();
   }
 
   createEditTaskModal() {
@@ -293,31 +361,34 @@ export class DOMmanipulator {
 
       const priorityLowLabel = document.createElement("label");
       priorityLowLabel.setAttribute("id", "priority");
-      priorityLowLabel.setAttribute("class", "priority-low");
-      priorityLowLabel.textContent = "low";
+      priorityLowLabel.setAttribute("class", "priority-low-btn");
+      priorityLowLabel.textContent = "Low";
 
       const priorityLowBtn = document.createElement("input");
       priorityLowBtn.setAttribute("type", "radio");
+      priorityLowBtn.setAttribute("checked", false);
       priorityLowBtn.setAttribute("value", "low");
       priorityLowBtn.setAttribute("required", true);
 
       const priorityMedLabel = document.createElement("label");
       priorityMedLabel.setAttribute("id", "priority");
-      priorityMedLabel.setAttribute("class", "priority-medium");
-      priorityMedLabel.textContent = "medium";
+      priorityMedLabel.setAttribute("class", "priority-medium-btn");
+      priorityMedLabel.textContent = "Medium";
 
       const priorityMedBtn = document.createElement("input");
       priorityMedBtn.setAttribute("type", "radio");
+      priorityMedBtn.setAttribute("checked", false);
       priorityMedBtn.setAttribute("value", "medium");
       priorityMedBtn.setAttribute("required", true);
 
       const priorityHighLabel = document.createElement("label");
       priorityHighLabel.setAttribute("id", "priority");
-      priorityHighLabel.setAttribute("class", "priority-high");
-      priorityHighLabel.textContent = "high";
+      priorityHighLabel.setAttribute("class", "priority-high-btn");
+      priorityHighLabel.textContent = "High";
 
       const priorityHighBtn = document.createElement("input");
       priorityHighBtn.setAttribute("type", "radio");
+      priorityHighBtn.setAttribute("checked", false);
       priorityHighBtn.setAttribute("value", "high");
       priorityHighBtn.setAttribute("required", true);
 
@@ -355,19 +426,26 @@ export class DOMmanipulator {
 
   populateEditModal(task) {
     const editTaskModal = document.querySelector("#edit-task-modal");
+    DOMController.resetForm();
 
     editTaskModal.querySelector("#task-title").value = task.name;
     editTaskModal.querySelector("#task-description").value = task.description;
     editTaskModal.querySelector("#task-due-date").value = task.dueDate;
-    const taskPriorityText = task.priority;
-    const taskPriorityAddClass = editTaskModal.querySelector(
-      `.priority-${taskPriorityText.toLowerCase()}`
+    let taskPriorityText = task.priority;
+    console.log(taskPriorityText);
+    let taskPriorityAddClass = editTaskModal.querySelector(
+      `.priority-${taskPriorityText.toLowerCase()}-btn`
     );
     if (taskPriorityAddClass) {
       taskPriorityAddClass.classList.add(
         `${taskPriorityText.toLowerCase()}-active`
       );
     }
+    let taskPriorityRadioBtn = editTaskModal.querySelector(
+      `input[value="${taskPriorityText.toLowerCase()}"]`
+    );
+
+    taskPriorityRadioBtn.setAttribute("checked", "true");
 
     editTaskModal.style.display = "block";
   }
@@ -380,7 +458,7 @@ export class DOMmanipulator {
 
     taskListInstance.saveTasksToLocalStorage();
 
-    taskListInstance.createNewTask();
+    taskListInstance.renderNewTask();
   }
 
   createEditProjectNameModal() {
@@ -625,10 +703,10 @@ export class TaskList {
     taskList.innerHTML = "";
     this.tasks.push(newTask);
     this.saveTasksToLocalStorage();
-    this.createNewTask();
+    this.renderNewTask();
   }
 
-  createNewTask() {
+  renderNewTask() {
     const taskList = document.querySelector("#task-list");
     taskList.innerHTML = "";
 
@@ -713,43 +791,13 @@ export class TaskList {
     const taskEditButtons = document.querySelectorAll("#task-edit");
     taskEditButtons.forEach((button, index) => {
       button.addEventListener("click", () => {
-        const task = this.tasks[index];
-        DOMController.populateEditModal(task);
-
-        const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
-        editTaskSubmitBtn.addEventListener("click", () => {
-          const taskItem = document.querySelector(`.task-item-${index}`);
-          taskItem.dataset.index = index;
-
-          const newName = document.querySelector("#task-title").value;
-          const newDescription =
-            document.querySelector("#task-description").value;
-          const newDueDate = document.querySelector("#task-due-date").value;
-          const newPriority = document.querySelector(
-            `[name="priority"]:checked`
-          ).value;
-
-          console.log(newName);
-          console.log(newDescription);
-          console.log(newDueDate);
-          console.log(newPriority);
-
-          DOMController.editTask(
-            index,
-            newName,
-            newDescription,
-            newDueDate,
-            newPriority
-          );
-
-          document.querySelector("#edit-task-modal").style.display = "none";
-        });
-
-        const taskEditCloseBtn = document.querySelector(".edit-close");
-        taskEditCloseBtn.addEventListener("click", () => {
-          document.querySelector("#edit-task-modal").style.display = "none";
-        });
+        this.renderEditTask(index);
       });
+    });
+
+    const taskEditCloseBtn = document.querySelector(".edit-close");
+    taskEditCloseBtn.addEventListener("click", () => {
+      document.querySelector("#edit-task-modal").style.display = "none";
     });
 
     const taskDeleteButtons = document.querySelectorAll("#task-delete");
@@ -760,10 +808,49 @@ export class TaskList {
     });
   }
 
+  renderEditTask(index) {
+    let task = this.tasks[index];
+
+    DOMController.resetForm();
+    DOMController.editTaskModalEventListeners();
+    DOMController.populateEditModal(task);
+
+    const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
+    editTaskSubmitBtn.addEventListener("click", () => {
+      const editTaskModal = document.querySelector("#edit-task-modal");
+      let taskItem = document.querySelector(`.task-item-${index}`);
+      taskItem.dataset.index = index;
+
+      let newName = editTaskModal.querySelector("#task-title").value;
+      let newDescription =
+        editTaskModal.querySelector("#task-description").value;
+      let newDueDate = editTaskModal.querySelector("#task-due-date").value;
+      let activeRadioButton = editTaskModal.querySelector('[class*="active"]');
+      let newPriority = activeRadioButton.textContent;
+
+      console.log(newName);
+      console.log(newDescription);
+      console.log(newDueDate);
+      console.log(newPriority);
+
+      DOMController.editTask(
+        index,
+        newName,
+        newDescription,
+        newDueDate,
+        newPriority
+      );
+
+      document.querySelector("#edit-task-modal").style.display = "none";
+    });
+    this.saveTasksToLocalStorage();
+    this.renderNewTask();
+  }
+
   removeTask(index) {
     this.tasks.splice(index, 1);
     this.saveTasksToLocalStorage();
-    this.createNewTask();
+    this.renderNewTask();
   }
 
   loadTasksFromLocalStorage() {

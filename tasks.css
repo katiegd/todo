@@ -151,9 +151,10 @@ div[class^="task-item-"]:hover {
 
 .task-details {
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr 1fr 60px;
+  grid-template-columns: 1fr 2fr 1fr 1fr 60px;
   justify-content: start;
   align-items: center;
+  gap: 10px;
 }
 
 .task-name {
@@ -261,7 +262,7 @@ form {
   gap: 20px;
 }
 
-.priority-low {
+.priority-low-btn {
   font-size: 0.8rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -277,7 +278,7 @@ form {
   background-color: hsl(120, 100%, 68%);
 }
 
-.priority-medium {
+.priority-medium-btn {
   font-size: 0.8rem;
   font-weight: 500;
 
@@ -294,7 +295,7 @@ form {
   background-color: hsl(62, 99%, 65%);
 }
 
-.priority-high {
+.priority-high-btn {
   font-size: 0.8rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -310,7 +311,7 @@ form {
   background-color: hsl(0, 100%, 65%);
 }
 
-.priority-low:hover {
+.priority-low-btn:hover {
   color: var(--darkest-purple);
   background-color: hsl(120, 100%, 68%);
   border: 1px solid hsl(120, 100%, 68%);
@@ -319,7 +320,7 @@ form {
   cursor: pointer;
 }
 
-.priority-medium:hover {
+.priority-medium-btn:hover {
   color: var(--darkest-purple);
   background-color: hsl(62, 99%, 65%);
   border: 1px solid hsl(62, 99%, 65%);
@@ -328,7 +329,7 @@ form {
   cursor: pointer;
 }
 
-.priority-high:hover {
+.priority-high-btn:hover {
   color: var(--darkest-purple);
   background-color: hsl(0, 100%, 65%);
   border: 1px solid hsl(0, 100%, 65%);
