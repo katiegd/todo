@@ -450,6 +450,53 @@ export class DOMmanipulator {
     editTaskModal.style.display = "block";
   }
 
+  createDetailViewModal() {
+    if (!document.querySelector("#detail-view-modal")) {
+      const detailViewModal = document.createElement("div");
+      detailViewModal.setAttribute("id", "detail-view-modal");
+      detailViewModal.setAttribute("class", "modal");
+      detailViewModal.setAttribute("style", "display: block");
+
+      const dVDiv = document.createElement("div");
+      dVDiv.classList.add("modal-content", "detail-view");
+
+      const closeBtn = document.createElement("span");
+      closeBtn.setAttribute("class", "edit-close");
+      closeBtn.textContent = "×";
+
+      const taskName = document.createElement("div");
+      taskName.setAttribute("class", "task-name");
+      taskName.textContent = "Task:";
+
+      const taskDetail = document.createElement("div");
+      taskDetail.setAttribute("class", "task-detail");
+      taskDetail.textContent = "Details:";
+
+      const taskDueDate = document.createElement("div");
+      taskDueDate.setAttribute("class", "task-due-date");
+      taskDueDate.textContent = "Due:";
+
+      const taskPriority = document.createElement("div");
+      taskPriority.setAttribute("class", "task-priority");
+      taskPriority.textContent = "Priority:";
+
+      const taskProject = document.createElement("div");
+      taskProject.setAttribute("class", "task-project");
+      taskProject.textContent = "From List:";
+
+      dVDiv.appendChild(closeBtn);
+      dVDiv.appendChild(taskName);
+      dVDiv.appendChild(taskDetail);
+      dVDiv.appendChild(taskDueDate);
+      dVDiv.appendChild(taskPriority);
+      dVDiv.appendChild(taskProject);
+
+      detailViewModal.appendChild(dVDiv);
+
+      document.body.appendChild(detailViewModal);
+    }
+  }
+
   editTask(index, newName, newDescription, newDueDate, newPriority) {
     taskListInstance.tasks[index].name = newName;
     taskListInstance.tasks[index].description = newDescription;
@@ -688,6 +735,7 @@ export class TaskList {
     this.tasks = this.loadTasksFromLocalStorage() || [];
     DOMController.createTaskModal();
     DOMController.createEditTaskModal();
+    DOMController.createDetailViewModal();
   }
 
   addTask(projectId, name, description, dueDate, priority, checked = false) {
@@ -828,11 +876,6 @@ export class TaskList {
       let activeRadioButton = editTaskModal.querySelector('[class*="active"]');
       let newPriority = activeRadioButton.textContent;
 
-      console.log(newName);
-      console.log(newDescription);
-      console.log(newDueDate);
-      console.log(newPriority);
-
       DOMController.editTask(
         index,
         newName,
@@ -840,6 +883,11 @@ export class TaskList {
         newDueDate,
         newPriority
       );
+
+      taskItem.querySelector(".task-name").textContent = newName;
+      taskItem.querySelector(".task-description").textContent = newDescription;
+      taskItem.querySelector(".task-due-date").textContent = newDueDate;
+      taskItem.querySelector(".task-priority").textContent = newPriority;
 
       document.querySelector("#edit-task-modal").style.display = "none";
     });
