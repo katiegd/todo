@@ -432,7 +432,6 @@ export class DOMmanipulator {
     editTaskModal.querySelector("#task-description").value = task.description;
     editTaskModal.querySelector("#task-due-date").value = task.dueDate;
     let taskPriorityText = task.priority;
-    console.log(taskPriorityText);
     let taskPriorityAddClass = editTaskModal.querySelector(
       `.priority-${taskPriorityText.toLowerCase()}-btn`
     );
@@ -455,46 +454,89 @@ export class DOMmanipulator {
       const detailViewModal = document.createElement("div");
       detailViewModal.setAttribute("id", "detail-view-modal");
       detailViewModal.setAttribute("class", "modal");
-      detailViewModal.setAttribute("style", "display: block");
+      detailViewModal.setAttribute("style", "display: none");
 
       const dVDiv = document.createElement("div");
       dVDiv.classList.add("modal-content", "detail-view");
 
       const closeBtn = document.createElement("span");
-      closeBtn.setAttribute("class", "edit-close");
+      closeBtn.setAttribute("class", "DV-close");
       closeBtn.textContent = "×";
 
-      const taskName = document.createElement("div");
-      taskName.setAttribute("class", "task-name");
-      taskName.textContent = "Task:";
+      const dVDetailsDiv = document.createElement("div");
+      dVDetailsDiv.setAttribute("class", "DV-name-project");
 
-      const taskDetail = document.createElement("div");
-      taskDetail.setAttribute("class", "task-detail");
-      taskDetail.textContent = "Details:";
-
-      const taskDueDate = document.createElement("div");
-      taskDueDate.setAttribute("class", "task-due-date");
-      taskDueDate.textContent = "Due:";
-
-      const taskPriority = document.createElement("div");
-      taskPriority.setAttribute("class", "task-priority");
-      taskPriority.textContent = "Priority:";
+      const taskName = document.createElement("h1");
+      taskName.setAttribute("class", "DV-task-header");
+      // taskName.textContent = "Feed Kittens";
 
       const taskProject = document.createElement("div");
-      taskProject.setAttribute("class", "task-project");
-      taskProject.textContent = "From List:";
+      taskProject.setAttribute("class", "DV-task-label");
+      // taskProject.textContent = "General";
+
+      const taskDetail = document.createElement("div");
+      taskDetail.setAttribute("class", "DV-task-detail");
+      // taskDetail.textContent = "2 scoops per day ";
+
+      const taskDuePriorityDiv = document.createElement("div");
+      taskDuePriorityDiv.setAttribute("class", "DV-due-priority");
+
+      const taskDueDate = document.createElement("div");
+      taskDueDate.setAttribute("class", "DV-task-label");
+      taskDueDate.textContent = "Due: ";
+
+      const taskDueDateContent = document.createElement("p");
+      taskDueDateContent.setAttribute("class", "DV-due-date");
+      // taskDueDateContent.textContent = "May 25, 2025";
+
+      const taskPriority = document.createElement("div");
+      taskPriority.setAttribute("class", "DV-task-label");
+      taskPriority.textContent = "Priority: ";
+
+      const taskPriorityContent = document.createElement("p");
+      taskPriorityContent.setAttribute("class", "DV-task-priority");
+      // taskPriorityContent.textContent = "High";
 
       dVDiv.appendChild(closeBtn);
-      dVDiv.appendChild(taskName);
-      dVDiv.appendChild(taskDetail);
-      dVDiv.appendChild(taskDueDate);
-      dVDiv.appendChild(taskPriority);
-      dVDiv.appendChild(taskProject);
+
+      taskDuePriorityDiv.appendChild(taskDueDate);
+      taskDuePriorityDiv.appendChild(taskPriority);
+
+      taskDueDate.appendChild(taskDueDateContent);
+      taskPriority.appendChild(taskPriorityContent);
+
+      dVDetailsDiv.appendChild(taskProject);
+      dVDetailsDiv.appendChild(taskName);
+      dVDetailsDiv.appendChild(taskDetail);
+      dVDetailsDiv.appendChild(taskDuePriorityDiv);
+
+      dVDiv.appendChild(dVDetailsDiv);
 
       detailViewModal.appendChild(dVDiv);
 
       document.body.appendChild(detailViewModal);
     }
+  }
+
+  populateDVModal(task) {
+    const DVModal = document.querySelector("#detail-view-modal");
+
+    const dueDate = new Date(task.dueDate);
+    const formattedDueDate = dueDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
+    const taskPriority = DVModal.querySelector(".DV-task-priority");
+
+    DVModal.querySelector(".DV-task-header").textContent = task.name;
+    DVModal.querySelector(".DV-task-detail").textContent = task.description;
+    DVModal.querySelector(".DV-due-date").textContent = formattedDueDate;
+    taskPriority.textContent = task.priority;
+    taskPriority.classList.add(`DV-priority-${task.priority}`);
+
+    DVModal.style.display = "block";
   }
 
   editTask(index, newName, newDescription, newDueDate, newPriority) {
@@ -774,12 +816,13 @@ export class TaskList {
       const taskCheckboxLabel = document.createElement("label");
       taskCheckboxLabel.classList.add("task-checkbox");
 
-      taskCheckbox.addEventListener("change", () => {
+      taskCheckbox.addEventListener("change", (event) => {
         if (taskCheckbox.checked) {
           taskItem.classList.add("checked");
         } else {
           taskItem.classList.remove("checked");
         }
+        event.stopPropagation();
       });
 
       const taskDetails = document.createElement("div");
@@ -838,8 +881,9 @@ export class TaskList {
     });
     const taskEditButtons = document.querySelectorAll("#task-edit");
     taskEditButtons.forEach((button, index) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (event) => {
         this.renderEditTask(index);
+        event.stopPropagation();
       });
     });
 
@@ -850,9 +894,23 @@ export class TaskList {
 
     const taskDeleteButtons = document.querySelectorAll("#task-delete");
     taskDeleteButtons.forEach((button, i) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (event) => {
         this.removeTask(i);
+        event.stopPropagation();
       });
+    });
+
+    const detailViewBtns = document.querySelectorAll("[class*=task-item]");
+    detailViewBtns.forEach((button, index) => {
+      button.addEventListener("click", () => {
+        const task = this.tasks[index];
+        DOMController.populateDVModal(task);
+      });
+    });
+
+    const dVCloseBtn = document.querySelector(".DV-close");
+    dVCloseBtn.addEventListener("click", () => {
+      document.querySelector("#detail-view-modal").style.display = "none";
     });
   }
 
@@ -892,7 +950,7 @@ export class TaskList {
       document.querySelector("#edit-task-modal").style.display = "none";
     });
     this.saveTasksToLocalStorage();
-    this.renderNewTask();
+    // this.renderNewTask();
   }
 
   removeTask(index) {
