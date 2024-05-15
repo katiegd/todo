@@ -533,7 +533,9 @@ export class DOMmanipulator {
     DVModal.querySelector(".DV-task-header").textContent = task.name;
     DVModal.querySelector(".DV-task-detail").textContent = task.description;
     DVModal.querySelector(".DV-due-date").textContent = formattedDueDate;
+
     taskPriority.textContent = task.priority;
+    taskPriority.className = "DV-task-priority";
     taskPriority.classList.add(`DV-priority-${task.priority}`);
 
     DVModal.style.display = "block";
