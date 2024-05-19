@@ -59,7 +59,7 @@ div[class^="task-item-"] {
   align-items: center;
   justify-items: stretch;
   width: 100%;
-  border-radius: 0px 10px 10px 0px;
+  border-radius: 10px 10px 10px 10px;
   padding: 10px;
   margin: 0px 0px 15px 0px;
   color: #cbcbcb;
@@ -173,8 +173,8 @@ div[class^="task-item-"]:hover {
   font-weight: 100;
 }
 
-.modal {
-  display: none;
+.show-modal {
+  display: block;
   position: fixed;
   z-index: 1;
   left: 0;
@@ -185,6 +185,10 @@ div[class^="task-item-"]:hover {
   backdrop-filter: blur(10px);
   background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.hidden {
+  display: none;
 }
 
 .modal-content {

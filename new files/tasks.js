@@ -1,4 +1,4 @@
-import { projects, getProject } from "./projects";
+import { projects, getProject } from "../new files/projects.js";
 
 function Tasks(projectId, name, description, dueDate, priority) {
   let id = Date.now.toString();
@@ -57,3 +57,5 @@ function getTask(projectId, taskId) {
     }
   }
 }
+
+export { addTask, editTask, getTask, deleteTask };

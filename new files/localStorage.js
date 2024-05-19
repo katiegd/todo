@@ -2,24 +2,24 @@ const localStorageKey = "projects";
 const localStorageID = "projectID";
 
 function saveToLocalStorage(projects, projectID) {
-  const projectsJson = JSON.stringify(this.projects);
-  const projectIDJson = JSON.stringify(this.projectID);
+  const projectsJson = JSON.stringify(projects);
+  const projectIDJson = JSON.stringify(projectID);
 
   localStorage.setItem(localStorageKey, projectsJson);
   localStorage.setItem(localStorageID, projectIDJson);
 }
 
 function loadFromLocalStorage() {
-  const projectsJson = localStorage.getItem("projects");
-  return JSON.parse(projectsJson);
+  console.log("Local Storage is loaded.");
+  const projectsJson = localStorage.getItem(localStorageKey);
+  const projects = JSON.parse(projectsJson);
+  console.log(projects);
+  return projects;
 }
 
-function saveTasksToLocalStorage() {
-  const tasksJson = JSON.stringify(this.tasks);
-  localStorage.setItem("tasks", tasksJson);
+function loadIdFromLocalStorage() {
+  const activeProjectId = Json.parse(localStorage.getItem(localStorageID));
+  return activeProjectId;
 }
 
-function loadTasksFromLocalStorage() {
-  const tasksJson = localStorage.getItem("tasks");
-  return JSON.parse(tasksJson);
-}
+export { saveToLocalStorage, loadFromLocalStorage, loadIdFromLocalStorage };

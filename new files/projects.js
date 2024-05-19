@@ -1,4 +1,10 @@
+import {
+  saveToLocalStorage,
+  loadFromLocalStorage,
+} from "../new files/localStorage.js";
+
 let projects = loadFromLocalStorage() || [];
+// let projects = [];
 
 function Project(name) {
   let id = Date.now().toString();
@@ -10,32 +16,35 @@ function Project(name) {
   };
 }
 
-// Adds project to projects array. If a project exists with the same name, "_1" will be added to the name.
+// Adds project to projects array. If a project exists with the same name, will be incremented +1.
 function addProject(name) {
   let project;
-  if (
-    projects.find(function (project) {
-      return project.name === name;
-    })
-  ) {
-    project = Project(name + "_1");
+
+  const dupeProjects = projects.filter(function (project) {
+    return project.name.startsWith(name);
+  });
+
+  if (dupeProjects.length > 0) {
+    const count = dupeProjects.length;
+    project = Project(`${name}${count}`);
   } else {
     project = Project(name);
   }
+
   projects.push(project);
-  //save to local storage
+  saveToLocalStorage(projects);
 }
 
 function editProjectName(projectId, newName) {
   const project = getProject(projectId);
   project.name = newName;
-  //save to local storage
+  saveToLocalStorage(projects, projectId);
 }
 
 function deleteProject(projectId) {
   const projectIndex = getProjectIndex(projectId);
   projects.splice(projectIndex, 1);
-  //save to local storage
+  saveToLocalStorage(projects, projectId);
 }
 
 // Finds the projectId in projects array
