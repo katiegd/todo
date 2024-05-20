@@ -88,6 +88,10 @@
   cursor: pointer;
 }
 
+.active-project {
+  background-color: var(--lightest-purple) !important;
+}
+
 #project-edit,
 #project-delete {
   padding: 5px 5px;
