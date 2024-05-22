@@ -31,8 +31,10 @@ function addProject(name) {
     project = Project(name);
   }
 
+  let projectId = project.id;
+
   projects.push(project);
-  saveToLocalStorage(projects);
+  saveToLocalStorage(projects, projectId);
 }
 
 function editProjectName(projectId, newName) {

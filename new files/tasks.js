@@ -1,4 +1,5 @@
 import { projects, getProject } from "../new files/projects.js";
+import { saveToLocalStorage } from "./localStorage.js";
 
 function Tasks(projectId, name, description, dueDate, priority) {
   let id = Date.now.toString();
@@ -17,8 +18,9 @@ function Tasks(projectId, name, description, dueDate, priority) {
 function addTask(projectId, name, description, dueDate, priority) {
   const project = getProject(projectId);
   const task = Tasks(projectId, name, description, dueDate, priority);
+  console.log(project);
   project.tasks.push(task);
-  // Save to local storage
+  saveToLocalStorage(projects, projectId);
 }
 
 function editTask(
@@ -36,14 +38,14 @@ function editTask(
   task.dueDate = newDueDate;
   task.priority = newPriority;
 
-  // Save to local storage
+  saveToLocalStorage(projects, projectId);
 }
 
 function deleteTask(projectId, taskId) {
   const project = getProject(projectId);
   const taskIndex = getTaskIndex(projectId, taskId);
   project.tasks.splice(taskIndex, 1);
-  // Save to local storage
+  saveToLocalStorage(projects, projectId);
 }
 
 function getTask(projectId, taskId) {

@@ -1,191 +1,15 @@
-import { loadFromLocalStorage } from "./localStorage.js";
+import { loadFromLocalStorage, saveToLocalStorage } from "./localStorage.js";
 import * as projectModule from "./projects.js";
 import * as taskModule from "./tasks.js";
 
-function DomManipulator() {
-  const projects = projectModule.projects;
-  let activeProject = null;
-
-  const projectPanel = document.querySelector("#project-panel");
-  const projectList = document.querySelector("#project-list");
-  const taskModal = document.querySelector("#task-modal");
-  const editModal = document.querySelector("#edit-modal");
-  const addNewTaskBtn = document.querySelector("#add-task");
-  const taskForm = document.querySelector("#task-form");
-  const dateInput = document.querySelector("#task-due-date");
-  const closeBtn = document.querySelector(".close");
-  const submitTaskBtn = document.querySelector("#task-submit");
-  const editTaskModal = document.querySelector("#edit-task-modal");
-  const projectNameInput = document.querySelector("#project-name-input");
-  const addProjectBtn = document.querySelector("#add-project");
-  const addProjectInput = document.querySelector("#project-name-input");
-  const taskList = document.querySelector("#task-list");
-  const priorityLowBtn = document.querySelector(".priority-low-btn");
-  const priorityMedBtn = document.querySelector(".priority-medium-btn");
-  const priorityHighBtn = document.querySelector(".priority-high-btn");
-  const taskNameH1 = document.querySelector(".task-name-h1");
-
-  const editTaskModalForm = document.querySelector(
-    "#edit-task-modal #task-form"
-  );
-  const editPriorityLowBtn = document.querySelector(
-    "#edit-task-modal .priority-low-btn"
-  );
-  const editPriorityMedBtn = document.querySelector(
-    "#edit-task-modal .priority-medium-btn"
-  );
-  const editPriorityHighBtn = document.querySelector(
-    "#edit-task-modal .priority-high-btn"
-  );
-
-  let taskName = document.querySelector(".task-name-h1");
-  // let taskTitleInput = document.querySelector("#task-title").value;
-  // let taskDescriptionInput = document.querySelector("#task-description").value;
-  // let taskDueDateInput = document.querySelector("#task-due-date").value;
-  // let activeRadioButton = document.querySelector('[class*="active"]');
-
-  addNewTaskBtn.addEventListener("click", () => {
-    resetForm();
-    console.log(taskModal);
-    taskModal.classList.add("show-modal");
-  });
-
-  function handleEnterKey(event) {
-    if (event.type === "keydown" && event.key === "Enter") {
-      let projectName = projectNameInput.value;
-      if (projectName !== "") {
-        projectModule.addProject(projectName);
-
-        // Project Name input resets after enter key
-        projectNameInput.value = "";
-
-        renderProjectItem();
-        console.log(projectModule.projects);
-      }
-    }
-  }
-
-  addProjectInput.addEventListener("keydown", handleEnterKey);
-
-  addProjectBtn.addEventListener("click", () => {
-    let projectName = projectNameInput.value;
-    if (projectName !== "") {
-      projectModule.addProject(projectName);
-
-      // Project Name input resets after click
-      projectNameInput.value = "";
-
-      renderProjectItem();
-    }
-  });
-
-  function clearProjects() {
-    projectList.innerHTML = "";
-  }
-
-  function clearTasks() {
-    taskList.innerHTML = "";
-  }
-
-  function renderProjectItem() {
-    clearProjects();
-
-    projects.forEach((project) => {
-      const projectItem = document.createElement("div");
-      projectItem.setAttribute("id", "project-item");
-      projectItem.dataset.projectId = project.id;
-
-      const projectName = document.createElement("div");
-      projectName.textContent = project.name;
-      projectName.setAttribute("id", "project-item-name");
-
-      const projectEditDeleteDiv = document.createElement("div");
-      projectEditDeleteDiv.setAttribute("id", "edit-delete");
-
-      const projectEdit = document.createElement("img");
-      projectEdit.setAttribute("id", "project-edit");
-      projectEdit.src = "../assets/edit.svg";
-      projectEdit.width = "25";
-      projectEdit.height = "25";
-
-      const projectDelete = document.createElement("img");
-      projectDelete.setAttribute("id", "project-delete");
-      projectDelete.src = "../assets/delete.svg";
-      projectDelete.width = "25";
-      projectDelete.height = "25";
-
-      projectEditDeleteDiv.appendChild(projectEdit);
-      projectEditDeleteDiv.appendChild(projectDelete);
-
-      projectItem.appendChild(projectName);
-      projectItem.appendChild(projectEditDeleteDiv);
-
-      projectList.appendChild(projectItem);
-      projectPanel.appendChild(projectList);
-
-      const activeProjectId = projectItem.dataset.projectId;
-      const activeProject = projectModule.getProject(activeProjectId);
-      renderTasks(activeProject);
-
-      projectItem.addEventListener("click", (e) => {
-        console.log("Project button clicked!");
-        taskNameH1.textContent = project.name;
-        renderTasks(activeProject);
-      });
-
-      projectEdit.addEventListener("click", (e) => {
-        e.stopPropagation();
-        console.log("Edit button clicked!");
-        console.log(editModal);
-        editModal.style.display = "block";
-      });
-
-      projectDelete.addEventListener("click", (e) => {
-        e.stopPropagation();
-        console.log("Delete button clicked!");
-        const projectId = project.id;
-        projectModule.deleteProject(projectId);
-        taskNameH1.textContent = "";
-        renderProjectItem();
-      });
-    });
-
-    const submitEditButton = document.querySelector(
-      "#edit-project-name-submit"
-    );
-    // submitEditButton.addEventListener("click", this.submitNewProjectName);
-  }
-
-  function launchAddNewTaskModal() {
-    taskModal.style.display = "none";
-
-    addNewTaskBtn.addEventListener("click", () => {
-      this.resetForm();
-      taskModal.style.display = "block";
-    });
-  }
-
-  function resetForm() {
-    // priorityLowBtn.classList.remove("low-active");
-    // priorityLowBtn.setAttribute("checked", "false");
-    // priorityMedBtn.classList.remove("medium-active");
-    // priorityMedBtn.setAttribute("checked", "false");
-    // priorityHighBtn.classList.remove("high-active");
-    // priorityHighBtn.setAttribute("checked", "false");
-    // taskForm.reset();
-    // editPriorityLowBtn.classList.remove("low-active");
-    // editPriorityLowBtn.setAttribute("checked", "false");
-    // editPriorityMedBtn.classList.remove("medium-active");
-    // editPriorityMedBtn.setAttribute("checked", "false");
-    // editPriorityHighBtn.classList.remove("high-active");
-    // editPriorityHighBtn.setAttribute("checked", "false");
-    // editTaskModalForm.reset();
-  }
-
+// Initialize modals so they're accessible in DOM Manipulator
+function renderModals() {
   function renderAddTaskModal() {
     if (!document.querySelector("#task-modal")) {
       const taskModal = document.createElement("div");
       taskModal.setAttribute("id", "task-modal");
+      taskModal.setAttribute("class", "modal");
+      taskModal.setAttribute("style", "display: none");
 
       const taskDiv = document.createElement("div");
       taskDiv.setAttribute("class", "modal-content");
@@ -301,117 +125,11 @@ function DomManipulator() {
       taskDiv.appendChild(submitTaskBtn);
       taskModal.appendChild(taskDiv);
       document.body.appendChild(taskModal);
-    }
-  }
 
-  function setDateToToday() {
-    const todayDate = new Date();
-
-    dateInput.value =
-      todayDate.getFullYear().toString() +
-      "-" +
-      (todayDate.getMonth() + 1).toString().padStart(2, 0) +
-      "-" +
-      todayDate.getDate().toString().padStart(2, 0);
-  }
-
-  function taskModalEventListeners() {
-    priorityLowBtn.addEventListener("click", () => {
-      priorityLowBtn.classList.toggle("low-active");
-      priorityLowBtn.setAttribute("checked", true);
-      priorityMedBtn.classList.remove("medium-active");
-      priorityMedBtn.setAttribute("checked", false);
-      priorityHighBtn.classList.remove("high-active");
-      priorityHighBtn.setAttribute("checked", false);
-    });
-
-    priorityMedBtn.addEventListener("click", () => {
-      priorityMedBtn.classList.toggle("medium-active");
-      priorityMedBtn.setAttribute("checked", true);
-      priorityLowBtn.classList.remove("low-active");
-      priorityLowBtn.setAttribute("checked", false);
-      priorityHighBtn.classList.remove("high-active");
-      priorityHighBtn.setAttribute("checked", false);
-    });
-
-    priorityHighBtn.addEventListener("click", () => {
-      priorityHighBtn.classList.toggle("high-active");
-      priorityHighBtn.setAttribute("checked", true);
-      priorityLowBtn.classList.remove("low-active");
-      priorityLowBtn.setAttribute("checked", false);
-      priorityMedBtn.classList.remove("medium-active");
-      priorityMedBtn.setAttribute("checked", false);
-    });
-
-    closeBtn.addEventListener("click", () => {
-      taskModal.style.display = "none";
-    });
-
-    window.onclick = function (event) {
-      if (event.target == taskModal) {
+      closeBtn.addEventListener("click", () => {
         taskModal.style.display = "none";
-      }
-    };
-
-    submitTaskBtn.addEventListener("click", this.submitTask);
-  }
-
-  function editTaskModalEventListeners() {
-    const priorityLowRadio = editTaskModal.querySelector(
-      'input[type="radio"][value="low"]'
-    );
-    const priorityMedRadio = editTaskModal.querySelector(
-      'input[type="radio"][value="medium"]'
-    );
-    const priorityHighRadio = editTaskModal.querySelector(
-      'input[type="radio"][value="high"]'
-    );
-
-    priorityLowBtn.addEventListener("click", () => {
-      priorityLowBtn.classList.add("low-active");
-      priorityLowRadio.setAttribute("checked", true);
-      priorityMedBtn.classList.remove("medium-active");
-      priorityMedRadio.setAttribute("checked", false);
-      priorityHighBtn.classList.remove("high-active");
-      priorityHighRadio.setAttribute("checked", false);
-    });
-
-    priorityMedBtn.addEventListener("click", () => {
-      priorityMedBtn.classList.add("medium-active");
-      priorityMedRadio.setAttribute("checked", true);
-      priorityLowBtn.classList.remove("low-active");
-      priorityLowRadio.setAttribute("checked", false);
-      priorityHighBtn.classList.remove("high-active");
-      priorityHighRadio.setAttribute("checked", false);
-    });
-
-    priorityHighBtn.addEventListener("click", () => {
-      priorityHighBtn.classList.add("high-active");
-      priorityHighRadio.setAttribute("checked", true);
-      priorityLowBtn.classList.remove("low-active");
-      priorityLowRadio.setAttribute("checked", false);
-      priorityMedBtn.classList.remove("medium-active");
-      priorityMedRadio.setAttribute("checked", false);
-    });
-  }
-
-  function submitTask() {
-    if (!activeRadioButton || !activeRadioButton.textContent) {
-      return;
+      });
     }
-    let taskPriorityInput = activeRadioButton.textContent;
-
-    taskModule.addTask(
-      taskTitleInput,
-      taskDescriptionInput,
-      taskDueDateInput,
-      taskPriorityInput
-    );
-
-    document.getElementById("task-form").reset();
-
-    taskModal.style.display = "none";
-    taskListInstance.renderNewTask();
   }
 
   function renderEditTaskModal() {
@@ -419,6 +137,7 @@ function DomManipulator() {
       const taskModal = document.createElement("div");
       taskModal.setAttribute("id", "edit-task-modal");
       taskModal.setAttribute("class", "modal");
+      taskModal.setAttribute("style", "display: none");
 
       const taskDiv = document.createElement("div");
       taskDiv.setAttribute("class", "modal-content");
@@ -537,30 +256,6 @@ function DomManipulator() {
     }
   }
 
-  function populateEditModal(task) {
-    resetForm();
-
-    editTaskModal.querySelector("#task-title").value = task.name;
-    editTaskModal.querySelector("#task-description").value = task.description;
-    editTaskModal.querySelector("#task-due-date").value = task.dueDate;
-    let taskPriorityText = task.priority;
-    let taskPriorityAddClass = editTaskModal.querySelector(
-      `.priority-${taskPriorityText.toLowerCase()}-btn`
-    );
-    if (taskPriorityAddClass) {
-      taskPriorityAddClass.classList.add(
-        `${taskPriorityText.toLowerCase()}-active`
-      );
-    }
-    let taskPriorityRadioBtn = editTaskModal.querySelector(
-      `input[value="${taskPriorityText.toLowerCase()}"]`
-    );
-
-    taskPriorityRadioBtn.setAttribute("checked", "true");
-
-    editTaskModal.style.display = "block";
-  }
-
   function renderDetailViewModal() {
     if (!document.querySelector("#detail-view-modal")) {
       const detailViewModal = document.createElement("div");
@@ -630,6 +325,411 @@ function DomManipulator() {
     }
   }
 
+  function renderEditProjectNameModal() {
+    if (!document.querySelector("#edit-modal")) {
+      const editModal = document.createElement("div");
+      editModal.setAttribute("id", "edit-modal");
+      editModal.setAttribute("class", "edit-modal");
+      editModal.setAttribute("style", "display: none");
+
+      const editModalInput = document.createElement("div");
+      editModalInput.setAttribute("class", "edit-modal-content");
+
+      const closeBtn = document.createElement("span");
+      closeBtn.setAttribute("class", "edit-name-close");
+      closeBtn.textContent = "Close";
+
+      const inputDiv = document.createElement("div");
+      inputDiv.setAttribute("class", "input-div");
+
+      const editProjectNameInput = document.createElement("input");
+      editProjectNameInput.setAttribute("type", "text");
+      editProjectNameInput.setAttribute("class", "project-name");
+      const projectName = document.querySelector("#project-item-name");
+      editProjectNameInput.value = projectName;
+
+      const submitEditButton = document.createElement("button");
+      submitEditButton.setAttribute("id", "edit-project-name-submit");
+      submitEditButton.textContent = "Submit";
+
+      inputDiv.appendChild(editProjectNameInput);
+      inputDiv.appendChild(submitEditButton);
+      editModalInput.appendChild(closeBtn);
+      editModalInput.appendChild(inputDiv);
+
+      editModal.appendChild(editModalInput);
+
+      document.body.appendChild(editModal);
+
+      closeBtn.addEventListener("click", () => {
+        editModal.style.display = "none";
+      });
+    }
+  }
+  renderAddTaskModal();
+  renderEditTaskModal();
+  renderDetailViewModal();
+  renderEditProjectNameModal();
+}
+
+renderModals();
+
+function DomManipulator() {
+  const projects = projectModule.projects;
+  console.log(projects);
+  let activeProject = null;
+
+  // All relevant query selectors
+  const projectPanel = document.querySelector("#project-panel");
+  const projectList = document.querySelector("#project-list");
+  const taskModal = document.querySelector("#task-modal");
+  const editModal = document.querySelector("#edit-modal");
+  const addNewTaskBtn = document.querySelector("#add-task");
+  const taskForm = document.querySelector("#task-form");
+  const dateInput = document.querySelector("#task-due-date");
+  const closeBtn = document.querySelector(".close");
+  const submitTaskBtn = document.querySelector("#task-submit");
+  const editTaskModal = document.querySelector("#edit-task-modal");
+  const projectNameInput = document.querySelector("#project-name-input");
+  const addProjectBtn = document.querySelector("#add-project");
+  const addProjectInput = document.querySelector("#project-name-input");
+  const taskList = document.querySelector("#task-list");
+  const priorityLowBtn = document.querySelector(".priority-low-btn");
+  const priorityMedBtn = document.querySelector(".priority-medium-btn");
+  const priorityHighBtn = document.querySelector(".priority-high-btn");
+  const taskNameH1 = document.querySelector(".task-name-h1");
+  const editprojectNameInput = editModal.querySelector(".project-name");
+  const submitEditButton = editModal.querySelector("#edit-project-name-submit");
+
+  const editTaskModalForm = document.querySelector(
+    "#edit-task-modal #task-form"
+  );
+  const editPriorityLowBtn = document.querySelector(
+    "#edit-task-modal .priority-low-btn"
+  );
+  const editPriorityMedBtn = document.querySelector(
+    "#edit-task-modal .priority-medium-btn"
+  );
+  const editPriorityHighBtn = document.querySelector(
+    "#edit-task-modal .priority-high-btn"
+  );
+
+  let taskName = document.querySelector(".task-name-h1");
+  let taskTitleInput = document.querySelector("#task-title").value;
+  let taskDescriptionInput = document.querySelector("#task-description").value;
+  let taskDueDateInput = document.querySelector("#task-due-date").value;
+  let activeRadioButton = document.querySelector('[class*="active"]');
+
+  // Event listeners to launch/close the task modal
+  addNewTaskBtn.addEventListener("click", () => {
+    resetForm();
+    taskModal.style.display = "block";
+  });
+
+  window.onclick = function (event) {
+    if (event.target == taskModal) {
+      taskModal.style.display = "none";
+    }
+  };
+
+  // Event listener to close the edit project name modal (the other is in the render function)
+  window.onclick = function (event) {
+    if (event.target == editModal) {
+      editModal.style.display = "none";
+    }
+  };
+
+  function handleEnterKey(event) {
+    if (event.type === "keydown" && event.key === "Enter") {
+      let projectName = projectNameInput.value;
+      if (projectName !== "") {
+        projectModule.addProject(projectName);
+
+        // Project Name input resets after enter key
+        projectNameInput.value = "";
+
+        renderProjectItem();
+      }
+    }
+  }
+
+  addProjectInput.addEventListener("keydown", handleEnterKey);
+
+  addProjectBtn.addEventListener("click", () => {
+    let projectName = projectNameInput.value;
+    if (projectName !== "") {
+      projectModule.addProject(projectName);
+
+      // Project Name input resets after click
+      projectNameInput.value = "";
+
+      renderProjectItem();
+    }
+  });
+
+  function clearProjects() {
+    projectList.innerHTML = "";
+  }
+
+  function clearTasks() {
+    taskList.innerHTML = "";
+  }
+
+  function renderProjectItem() {
+    clearProjects();
+
+    projects.forEach((project) => {
+      const projectItem = document.createElement("div");
+      projectItem.setAttribute("id", "project-item");
+      projectItem.dataset.projectId = project.id;
+
+      const projectName = document.createElement("div");
+      projectName.textContent = project.name;
+      projectName.setAttribute("id", "project-item-name");
+
+      const projectEditDeleteDiv = document.createElement("div");
+      projectEditDeleteDiv.setAttribute("id", "edit-delete");
+
+      const projectEdit = document.createElement("img");
+      projectEdit.setAttribute("id", "project-edit");
+      projectEdit.src = "../assets/edit.svg";
+      projectEdit.width = "25";
+      projectEdit.height = "25";
+
+      const projectDelete = document.createElement("img");
+      projectDelete.setAttribute("id", "project-delete");
+      projectDelete.src = "../assets/delete.svg";
+      projectDelete.width = "25";
+      projectDelete.height = "25";
+
+      projectEditDeleteDiv.appendChild(projectEdit);
+      projectEditDeleteDiv.appendChild(projectDelete);
+
+      projectItem.appendChild(projectName);
+      projectItem.appendChild(projectEditDeleteDiv);
+
+      projectList.appendChild(projectItem);
+      projectPanel.appendChild(projectList);
+
+      const projectItems = document.querySelectorAll("#project-item");
+
+      projectItems.forEach((projectItem) => {
+        projectItem.addEventListener("click", () => {
+          projectItems.forEach((item) =>
+            item.classList.remove("active-project")
+          );
+          projectItem.classList.add("active-project");
+        });
+      });
+
+      projectItem.addEventListener("click", () => {
+        taskNameH1.textContent = project.name;
+        activeProject = projectModule.getProject(projectItem.dataset.projectId);
+        if (activeProject) {
+          renderTasks(activeProject);
+          taskNameH1.textContent = activeProject.name;
+        } else {
+          console.error("Active project not found:", activeProject);
+        }
+      });
+
+      projectEdit.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const projectId = project.id;
+        populateEditProjectNameModal(projectId);
+      });
+
+      projectDelete.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const projectId = project.id;
+        projectModule.deleteProject(projectId);
+        taskNameH1.textContent = "";
+        renderProjectItem();
+      });
+    });
+  }
+
+  function resetForm() {
+    // priorityLowBtn.classList.remove("low-active");
+    // priorityLowBtn.setAttribute("checked", "false");
+    // priorityMedBtn.classList.remove("medium-active");
+    // priorityMedBtn.setAttribute("checked", "false");
+    // priorityHighBtn.classList.remove("high-active");
+    // priorityHighBtn.setAttribute("checked", "false");
+    // taskForm.reset();
+    // editPriorityLowBtn.classList.remove("low-active");
+    // editPriorityLowBtn.setAttribute("checked", "false");
+    // editPriorityMedBtn.classList.remove("medium-active");
+    // editPriorityMedBtn.setAttribute("checked", "false");
+    // editPriorityHighBtn.classList.remove("high-active");
+    // editPriorityHighBtn.setAttribute("checked", "false");
+    // editTaskModalForm.reset();
+  }
+
+  function setDateToToday() {
+    const todayDate = new Date();
+
+    dateInput.value =
+      todayDate.getFullYear().toString() +
+      "-" +
+      (todayDate.getMonth() + 1).toString().padStart(2, 0) +
+      "-" +
+      todayDate.getDate().toString().padStart(2, 0);
+  }
+
+  //Task Modal Event Listeners
+  priorityLowBtn.addEventListener("click", () => {
+    priorityLowBtn.classList.toggle("low-active");
+    priorityLowBtn.setAttribute("checked", true);
+    priorityMedBtn.classList.remove("medium-active");
+    priorityMedBtn.setAttribute("checked", false);
+    priorityHighBtn.classList.remove("high-active");
+    priorityHighBtn.setAttribute("checked", false);
+  });
+
+  priorityMedBtn.addEventListener("click", () => {
+    priorityMedBtn.classList.toggle("medium-active");
+    priorityMedBtn.setAttribute("checked", true);
+    priorityLowBtn.classList.remove("low-active");
+    priorityLowBtn.setAttribute("checked", false);
+    priorityHighBtn.classList.remove("high-active");
+    priorityHighBtn.setAttribute("checked", false);
+  });
+
+  priorityHighBtn.addEventListener("click", () => {
+    priorityHighBtn.classList.toggle("high-active");
+    priorityHighBtn.setAttribute("checked", true);
+    priorityLowBtn.classList.remove("low-active");
+    priorityLowBtn.setAttribute("checked", false);
+    priorityMedBtn.classList.remove("medium-active");
+    priorityMedBtn.setAttribute("checked", false);
+  });
+
+  window.onclick = function (event) {
+    if (event.target == taskModal) {
+      taskModal.style.display = "none";
+    }
+  };
+
+  submitTaskBtn.addEventListener("click", () => {
+    if (activeProject) {
+      const name = taskTitleInput;
+      const description = taskDescriptionInput;
+      const dueDate = taskDueDateInput;
+      const priority = "Low";
+      const projectId = activeProject.id;
+      taskModule.addTask(projectId, name, description, dueDate, priority);
+      taskModal.style.display = "none";
+      renderTasks(activeProject);
+    }
+  });
+
+  function editTaskModalEventListeners() {
+    const priorityLowRadio = editTaskModal.querySelector(
+      'input[type="radio"][value="low"]'
+    );
+    const priorityMedRadio = editTaskModal.querySelector(
+      'input[type="radio"][value="medium"]'
+    );
+    const priorityHighRadio = editTaskModal.querySelector(
+      'input[type="radio"][value="high"]'
+    );
+
+    priorityLowBtn.addEventListener("click", () => {
+      priorityLowBtn.classList.add("low-active");
+      priorityLowRadio.setAttribute("checked", true);
+      priorityMedBtn.classList.remove("medium-active");
+      priorityMedRadio.setAttribute("checked", false);
+      priorityHighBtn.classList.remove("high-active");
+      priorityHighRadio.setAttribute("checked", false);
+    });
+
+    priorityMedBtn.addEventListener("click", () => {
+      priorityMedBtn.classList.add("medium-active");
+      priorityMedRadio.setAttribute("checked", true);
+      priorityLowBtn.classList.remove("low-active");
+      priorityLowRadio.setAttribute("checked", false);
+      priorityHighBtn.classList.remove("high-active");
+      priorityHighRadio.setAttribute("checked", false);
+    });
+
+    priorityHighBtn.addEventListener("click", () => {
+      priorityHighBtn.classList.add("high-active");
+      priorityHighRadio.setAttribute("checked", true);
+      priorityLowBtn.classList.remove("low-active");
+      priorityLowRadio.setAttribute("checked", false);
+      priorityMedBtn.classList.remove("medium-active");
+      priorityMedRadio.setAttribute("checked", false);
+    });
+  }
+
+  function submitTask() {
+    if (!activeRadioButton || !activeRadioButton.textContent) {
+      return;
+    }
+    let taskPriorityInput = activeRadioButton.textContent;
+
+    taskModule.addTask(
+      taskTitleInput,
+      taskDescriptionInput,
+      taskDueDateInput,
+      taskPriorityInput
+    );
+
+    document.getElementById("task-form").reset();
+
+    taskModal.style.display = "none";
+    taskListInstance.renderNewTask();
+  }
+
+  function populateEditProjectNameModal(projectId) {
+    editModal.style.display = "block";
+    const project = projectModule.getProject(projectId);
+    if (project) {
+      editprojectNameInput.value = project.name;
+    }
+    submitEditButton.addEventListener(
+      "click",
+      (e) => {
+        e.stopPropagation();
+        submitNewProjectName(projectId);
+      },
+      { once: true }
+    );
+  }
+
+  function submitNewProjectName(projectId) {
+    const newName = editprojectNameInput.value;
+    projectModule.editProjectName(projectId, newName);
+    editModal.style.display = "none";
+    taskNameH1.textContent = newName;
+    renderProjectItem();
+  }
+
+  function populateEditModal(task) {
+    resetForm();
+
+    editTaskModal.querySelector("#task-title").value = task.name;
+    editTaskModal.querySelector("#task-description").value = task.description;
+    editTaskModal.querySelector("#task-due-date").value = task.dueDate;
+    let taskPriorityText = task.priority;
+    let taskPriorityAddClass = editTaskModal.querySelector(
+      `.priority-${taskPriorityText.toLowerCase()}-btn`
+    );
+    if (taskPriorityAddClass) {
+      taskPriorityAddClass.classList.add(
+        `${taskPriorityText.toLowerCase()}-active`
+      );
+    }
+    let taskPriorityRadioBtn = editTaskModal.querySelector(
+      `input[value="${taskPriorityText.toLowerCase()}"]`
+    );
+
+    taskPriorityRadioBtn.setAttribute("checked", "true");
+
+    editTaskModal.style.display = "block";
+  }
+
   function populateDVModal(task) {
     const DVModal = document.querySelector("#detail-view-modal");
 
@@ -673,12 +773,12 @@ function DomManipulator() {
       taskCheckboxLabel.classList.add("task-checkbox");
 
       taskCheckbox.addEventListener("change", (event) => {
+        event.stopPropagation();
         if (taskCheckbox.checked) {
           taskItem.classList.add("checked");
         } else {
           taskItem.classList.remove("checked");
         }
-        event.stopPropagation();
       });
 
       const taskDetails = document.createElement("div");
@@ -715,7 +815,7 @@ function DomManipulator() {
 
       const taskDelete = document.createElement("img");
       taskDelete.setAttribute("id", "task-delete");
-      taskDelete.src = "./assets/delete.svg";
+      taskDelete.src = "../assets/delete.svg";
       taskDelete.width = "25";
       taskDelete.height = "25";
 
@@ -809,51 +909,7 @@ function DomManipulator() {
     // this.renderNewTask();
   }
 
-  function renderEditProjectNameModal() {
-    if (!document.querySelector("#edit-modal")) {
-      const editModal = document.createElement("div");
-      editModal.setAttribute("id", "edit-modal");
-      editModal.setAttribute("class", "edit-modal");
-      editModal.setAttribute("style", "display: none");
-
-      const editModalInput = document.createElement("div");
-      editModalInput.setAttribute("class", "edit-modal-content");
-
-      const closeBtn = document.createElement("span");
-      closeBtn.setAttribute("class", "edit-name-close");
-      closeBtn.textContent = "Close";
-
-      const inputDiv = document.createElement("div");
-      inputDiv.setAttribute("class", "input-div");
-
-      const editProjectNameInput = document.createElement("input");
-      editProjectNameInput.setAttribute("type", "text");
-      editProjectNameInput.setAttribute("class", "project-name");
-      const projectName = document.querySelector("#project-item-name");
-      if (projectName) {
-        editProjectNameInput.value = projectName.textContent;
-      }
-
-      const submitEditButton = document.createElement("button");
-      submitEditButton.setAttribute("id", "edit-project-name-submit");
-      submitEditButton.textContent = "Submit";
-
-      inputDiv.appendChild(editProjectNameInput);
-      inputDiv.appendChild(submitEditButton);
-      editModalInput.appendChild(closeBtn);
-      editModalInput.appendChild(inputDiv);
-
-      editModal.appendChild(editModalInput);
-
-      document.body.appendChild(editModal);
-    }
-  }
-
   function renderMainPage() {
-    renderAddTaskModal();
-    renderDetailViewModal();
-    renderEditProjectNameModal();
-    renderEditTaskModal();
     renderProjectItem();
     renderTasks();
   }

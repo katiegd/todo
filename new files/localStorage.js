@@ -13,12 +13,11 @@ function loadFromLocalStorage() {
   console.log("Local Storage is loaded.");
   const projectsJson = localStorage.getItem(localStorageKey);
   const projects = JSON.parse(projectsJson);
-  console.log(projects);
   return projects;
 }
 
 function loadIdFromLocalStorage() {
-  const activeProjectId = Json.parse(localStorage.getItem(localStorageID));
+  const activeProjectId = JSON.parse(localStorage.getItem(localStorageID));
   return activeProjectId;
 }
 
