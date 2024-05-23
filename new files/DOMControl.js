@@ -371,6 +371,8 @@ function renderModals() {
 
 renderModals();
 
+function initialPageLoad() {}
+
 function DomManipulator() {
   const projects = projectModule.projects;
   activeProjectId = loadIdFromLocalStorage();
@@ -382,8 +384,6 @@ function DomManipulator() {
   const editModal = document.querySelector("#edit-modal");
   const addNewTaskBtn = document.querySelector("#add-task");
   const taskForm = document.querySelector("#task-form");
-  const dateInput = document.querySelector("#task-due-date");
-  const closeBtn = document.querySelector(".close");
   const submitTaskBtn = document.querySelector("#task-submit");
   const editTaskModal = document.querySelector("#edit-task-modal");
   const projectNameInput = document.querySelector("#project-name-input");

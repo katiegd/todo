@@ -59,7 +59,7 @@ div[class^="task-item"] {
   align-items: center;
   justify-items: stretch;
   width: 100%;
-  border-radius: 10px 10px 10px 10px;
+  border-radius: 0px 10px 10px 0px;
   padding: 10px;
   margin: 0px 0px 5px 0px;
   color: #cbcbcb;
@@ -75,7 +75,8 @@ div[class^="task-item"]:hover {
 .task-checkbox {
   display: block;
   position: relative;
-  padding-left: 35px;
+  left: 10px;
+  padding-left: 5px;
   margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
@@ -138,20 +139,20 @@ div[class^="task-item"]:hover {
 }
 
 .priority-Low {
-  box-shadow: -5px 0px 0px hsl(120, 50%, 35%);
+  box-shadow: -10px 0px 0px hsl(120, 50%, 35%);
 }
 
 .priority-Medium {
-  box-shadow: -5px 0px 0px hsl(62, 60%, 35%);
+  box-shadow: -10px 0px 0px hsl(62, 60%, 35%);
 }
 
 .priority-High {
-  box-shadow: -5px 0px 0px hsl(0, 70%, 35%);
+  box-shadow: -10px 0px 0px hsl(0, 70%, 35%);
 }
 
 .task-details {
   display: grid;
-  grid-template-columns: 1fr 1fr 120px 80px 60px;
+  grid-template-columns: 200px 1fr 120px 80px 60px;
   justify-content: start;
   align-items: center;
   gap: 10px;
