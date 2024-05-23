@@ -598,6 +598,44 @@ function DomManipulator() {
     priorityMedBtn.setAttribute("checked", false);
   });
 
+  // Edit task modal event listenrs
+  const priorityLowRadio = editTaskModal.querySelector(
+    'input[type="radio"][value="low"]'
+  );
+  const priorityMedRadio = editTaskModal.querySelector(
+    'input[type="radio"][value="medium"]'
+  );
+  const priorityHighRadio = editTaskModal.querySelector(
+    'input[type="radio"][value="high"]'
+  );
+
+  priorityLowBtn.addEventListener("click", () => {
+    priorityLowBtn.classList.add("low-active");
+    priorityLowRadio.setAttribute("checked", true);
+    priorityMedBtn.classList.remove("medium-active");
+    priorityMedRadio.setAttribute("checked", false);
+    priorityHighBtn.classList.remove("high-active");
+    priorityHighRadio.setAttribute("checked", false);
+  });
+
+  priorityMedBtn.addEventListener("click", () => {
+    priorityMedBtn.classList.add("medium-active");
+    priorityMedRadio.setAttribute("checked", true);
+    priorityLowBtn.classList.remove("low-active");
+    priorityLowRadio.setAttribute("checked", false);
+    priorityHighBtn.classList.remove("high-active");
+    priorityHighRadio.setAttribute("checked", false);
+  });
+
+  priorityHighBtn.addEventListener("click", () => {
+    priorityHighBtn.classList.add("high-active");
+    priorityHighRadio.setAttribute("checked", true);
+    priorityLowBtn.classList.remove("low-active");
+    priorityLowRadio.setAttribute("checked", false);
+    priorityMedBtn.classList.remove("medium-active");
+    priorityMedRadio.setAttribute("checked", false);
+  });
+
   window.onclick = function (event) {
     if (event.target == taskModal) {
       taskModal.style.display = "none";
@@ -628,64 +666,6 @@ function DomManipulator() {
       renderTasks(activeProject);
     }
   });
-
-  function editTaskModalEventListeners() {
-    const priorityLowRadio = editTaskModal.querySelector(
-      'input[type="radio"][value="low"]'
-    );
-    const priorityMedRadio = editTaskModal.querySelector(
-      'input[type="radio"][value="medium"]'
-    );
-    const priorityHighRadio = editTaskModal.querySelector(
-      'input[type="radio"][value="high"]'
-    );
-
-    priorityLowBtn.addEventListener("click", () => {
-      priorityLowBtn.classList.add("low-active");
-      priorityLowRadio.setAttribute("checked", true);
-      priorityMedBtn.classList.remove("medium-active");
-      priorityMedRadio.setAttribute("checked", false);
-      priorityHighBtn.classList.remove("high-active");
-      priorityHighRadio.setAttribute("checked", false);
-    });
-
-    priorityMedBtn.addEventListener("click", () => {
-      priorityMedBtn.classList.add("medium-active");
-      priorityMedRadio.setAttribute("checked", true);
-      priorityLowBtn.classList.remove("low-active");
-      priorityLowRadio.setAttribute("checked", false);
-      priorityHighBtn.classList.remove("high-active");
-      priorityHighRadio.setAttribute("checked", false);
-    });
-
-    priorityHighBtn.addEventListener("click", () => {
-      priorityHighBtn.classList.add("high-active");
-      priorityHighRadio.setAttribute("checked", true);
-      priorityLowBtn.classList.remove("low-active");
-      priorityLowRadio.setAttribute("checked", false);
-      priorityMedBtn.classList.remove("medium-active");
-      priorityMedRadio.setAttribute("checked", false);
-    });
-  }
-
-  function submitTask() {
-    if (!activeRadioButton || !activeRadioButton.textContent) {
-      return;
-    }
-    let taskPriorityInput = activeRadioButton.textContent;
-
-    taskModule.addTask(
-      taskTitleInput,
-      taskDescriptionInput,
-      taskDueDateInput,
-      taskPriorityInput
-    );
-
-    document.getElementById("task-form").reset();
-
-    taskModal.style.display = "none";
-    taskListInstance.renderNewTask();
-  }
 
   function populateEditProjectNameModal(projectId) {
     editModal.style.display = "block";
@@ -761,180 +741,151 @@ function DomManipulator() {
   function renderTasks(activeProject) {
     clearTasks();
 
-    activeProject.tasks.forEach((task) => {
-      const taskItem = document.createElement("div");
-      taskItem.setAttribute("class", `task-item`);
-      taskItem.dataset.index = task.id;
-      taskItem.classList.add(`priority-${task.priority}`);
+    if (activeProject && activeProject.tasks) {
+      activeProject.tasks.forEach((task) => {
+        const taskItem = document.createElement("div");
+        taskItem.setAttribute("class", `task-item`);
+        taskItem.dataset.index = task.id;
+        taskItem.classList.add(`priority-${task.priority}`);
 
-      const taskCheckbox = document.createElement("input");
-      taskCheckbox.setAttribute("type", "checkbox");
-      taskCheckbox.setAttribute("id", "task-checkbox");
+        const taskCheckbox = document.createElement("input");
+        taskCheckbox.setAttribute("type", "checkbox");
+        taskCheckbox.setAttribute("id", "task-checkbox");
 
-      const taskCheckboxCustom = document.createElement("span");
-      taskCheckboxCustom.setAttribute("class", "checkmark");
+        const taskCheckboxCustom = document.createElement("span");
+        taskCheckboxCustom.setAttribute("class", "checkmark");
 
-      const taskCheckboxLabel = document.createElement("label");
-      taskCheckboxLabel.classList.add("task-checkbox");
+        const taskCheckboxLabel = document.createElement("label");
+        taskCheckboxLabel.classList.add("task-checkbox");
 
-      taskCheckbox.addEventListener("change", (event) => {
-        event.stopPropagation();
-        if (taskCheckbox.checked) {
-          taskItem.classList.add("checked");
-        } else {
-          taskItem.classList.remove("checked");
-        }
-      });
+        taskCheckbox.addEventListener("change", (event) => {
+          event.stopPropagation();
+          if (taskCheckbox.checked) {
+            taskItem.classList.add("checked");
+          } else {
+            taskItem.classList.remove("checked");
+          }
+        });
 
-      const taskDetails = document.createElement("div");
-      taskDetails.setAttribute("class", "task-details");
+        const taskDetails = document.createElement("div");
+        taskDetails.setAttribute("class", "task-details");
 
-      const taskName = document.createElement("div");
-      taskName.setAttribute("class", "task-name");
-      taskName.textContent = task.name;
+        const taskName = document.createElement("div");
+        taskName.setAttribute("class", "task-name");
+        taskName.textContent = task.name;
 
-      const taskDescription = document.createElement("div");
-      taskDescription.setAttribute("class", "task-description");
-      taskDescription.textContent = task.description;
+        const taskDescription = document.createElement("div");
+        taskDescription.setAttribute("class", "task-description");
+        taskDescription.textContent = task.description;
 
-      const taskDueDate = document.createElement("div");
-      const dueDate = new Date(task.dueDate);
-      const formattedDueDate = `${dueDate.toLocaleString("en-US", {
-        month: "short",
-      })} ${dueDate.getDate() + 1}, ${dueDate.getFullYear()}`;
-      taskDueDate.setAttribute("class", "task-due-date");
-      taskDueDate.textContent = `Due: ${formattedDueDate}`;
+        const taskDueDate = document.createElement("div");
+        const dueDate = new Date(task.dueDate);
+        const formattedDueDate = `${dueDate.toLocaleString("en-US", {
+          month: "short",
+        })} ${dueDate.getDate() + 1}, ${dueDate.getFullYear()}`;
+        taskDueDate.setAttribute("class", "task-due-date");
+        taskDueDate.textContent = `Due: ${formattedDueDate}`;
 
-      const taskPriority = document.createElement("div");
-      taskPriority.setAttribute("class", "task-priority");
-      taskPriority.textContent = `${task.priority}`;
+        const taskPriority = document.createElement("div");
+        taskPriority.setAttribute("class", "task-priority");
+        taskPriority.textContent = `${task.priority}`;
 
-      const taskEditDeleteDiv = document.createElement("div");
-      taskEditDeleteDiv.setAttribute("id", "task-edit-delete");
+        const taskEditDeleteDiv = document.createElement("div");
+        taskEditDeleteDiv.setAttribute("id", "task-edit-delete");
 
-      const taskEdit = document.createElement("img");
-      taskEdit.setAttribute("id", "task-edit");
-      taskEdit.src = "../assets/edit.svg";
-      taskEdit.width = "25";
-      taskEdit.height = "25";
+        const taskEdit = document.createElement("img");
+        taskEdit.setAttribute("id", "task-edit");
+        taskEdit.src = "../assets/edit.svg";
+        taskEdit.width = "25";
+        taskEdit.height = "25";
 
-      const taskDelete = document.createElement("img");
-      taskDelete.setAttribute("id", "task-delete");
-      taskDelete.dataset.taskId = task.id;
-      taskDelete.src = "../assets/delete.svg";
-      taskDelete.width = "25";
-      taskDelete.height = "25";
+        const taskDelete = document.createElement("img");
+        taskDelete.setAttribute("id", "task-delete");
+        taskDelete.dataset.taskId = task.id;
+        taskDelete.src = "../assets/delete.svg";
+        taskDelete.width = "25";
+        taskDelete.height = "25";
 
-      taskDelete.addEventListener("click", (e) => {
-        e.stopPropagation();
-        activeTaskId = task.id;
-        taskModule.deleteTask(activeProject.id, activeTaskId);
-        console.log("Task Deleted.");
-        renderTasks(activeProject);
-      });
-
-      taskEditDeleteDiv.appendChild(taskEdit);
-      taskEditDeleteDiv.appendChild(taskDelete);
-
-      taskDetails.appendChild(taskName);
-      taskDetails.appendChild(taskDescription);
-      taskDetails.appendChild(taskDueDate);
-      taskDetails.appendChild(taskPriority);
-      taskDetails.appendChild(taskEditDeleteDiv);
-
-      taskCheckboxLabel.appendChild(taskCheckbox);
-      taskCheckboxLabel.appendChild(taskCheckboxCustom);
-      taskItem.appendChild(taskCheckboxLabel);
-      taskItem.appendChild(taskDetails);
-
-      taskList.appendChild(taskItem);
-
-      const taskEditButtons = document.querySelectorAll("#task-edit");
-      taskEditButtons.forEach((button) => {
-        button.addEventListener("click", (e) => {
+        taskDelete.addEventListener("click", (e) => {
           e.stopPropagation();
-          populateEditModal(task);
+          activeTaskId = task.id;
+          taskModule.deleteTask(activeProject.id, activeTaskId);
+          console.log("Task Deleted.");
+          renderTasks(activeProject);
+        });
+
+        taskEditDeleteDiv.appendChild(taskEdit);
+        taskEditDeleteDiv.appendChild(taskDelete);
+
+        taskDetails.appendChild(taskName);
+        taskDetails.appendChild(taskDescription);
+        taskDetails.appendChild(taskDueDate);
+        taskDetails.appendChild(taskPriority);
+        taskDetails.appendChild(taskEditDeleteDiv);
+
+        taskCheckboxLabel.appendChild(taskCheckbox);
+        taskCheckboxLabel.appendChild(taskCheckboxCustom);
+        taskItem.appendChild(taskCheckboxLabel);
+        taskItem.appendChild(taskDetails);
+
+        taskList.appendChild(taskItem);
+
+        const taskEditButtons = document.querySelectorAll("#task-edit");
+        taskEditButtons.forEach((button) => {
+          button.addEventListener("click", (e) => {
+            e.stopPropagation();
+            populateEditModal(task);
+          });
+        });
+
+        const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
+        editTaskSubmitBtn.addEventListener("click", (e) => {
+          const editTaskModal = document.querySelector("#edit-task-modal");
+
+          let taskId = task.id;
+          let projectId = task.projectId;
+          let newName = editTaskModal.querySelector("#task-title").value;
+          let newDescription =
+            editTaskModal.querySelector("#task-description").value;
+          let newDueDate = editTaskModal.querySelector("#task-due-date").value;
+          let activeRadioButton =
+            editTaskModal.querySelector('[class*="active"]');
+          let newPriority = activeRadioButton.textContent;
+
+          taskModule.editTask(
+            projectId,
+            taskId,
+            newName,
+            newDescription,
+            newDueDate,
+            newPriority
+          );
+
+          document.querySelector("#edit-task-modal").style.display = "none";
+
+          console.log(projects);
+          console.log(activeProject);
+          renderTasks(activeProject);
+        });
+
+        const taskEditCloseBtn = document.querySelector(".edit-close");
+        taskEditCloseBtn.addEventListener("click", () => {
+          document.querySelector("#edit-task-modal").style.display = "none";
+        });
+
+        const detailViewBtns = document.querySelectorAll("[class*=task-item]");
+        detailViewBtns.forEach((button) => {
+          button.addEventListener("click", () => {
+            populateDVModal(task);
+          });
+        });
+
+        const dVCloseBtn = document.querySelector(".DV-close");
+        dVCloseBtn.addEventListener("click", () => {
+          document.querySelector("#detail-view-modal").style.display = "none";
         });
       });
-
-      const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
-      editTaskSubmitBtn.addEventListener("click", () => {
-        const editTaskModal = document.querySelector("#edit-task-modal");
-
-        let taskId = task.id;
-        let projectId = task.projectId;
-        let newName = editTaskModal.querySelector("#task-title").value;
-        let newDescription =
-          editTaskModal.querySelector("#task-description").value;
-        let newDueDate = editTaskModal.querySelector("#task-due-date").value;
-        let activeRadioButton =
-          editTaskModal.querySelector('[class*="active"]');
-        let newPriority = activeRadioButton.textContent;
-
-        taskModule.editTask(
-          projectId,
-          taskId,
-          newName,
-          newDescription,
-          newDueDate,
-          newPriority
-        );
-
-        document.querySelector("#edit-task-modal").style.display = "none";
-
-        saveToLocalStorage();
-        renderTasks(activeProject);
-      });
-
-      const taskEditCloseBtn = document.querySelector(".edit-close");
-      taskEditCloseBtn.addEventListener("click", () => {
-        document.querySelector("#edit-task-modal").style.display = "none";
-      });
-
-      const detailViewBtns = document.querySelectorAll("[class*=task-item]");
-      detailViewBtns.forEach((button) => {
-        button.addEventListener("click", () => {
-          populateDVModal(task);
-        });
-      });
-
-      const dVCloseBtn = document.querySelector(".DV-close");
-      dVCloseBtn.addEventListener("click", () => {
-        document.querySelector("#detail-view-modal").style.display = "none";
-      });
-    });
-  }
-
-  function renderEditTask(task) {
-    resetForm();
-    populateEditModal(task);
-
-    const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
-    editTaskSubmitBtn.addEventListener("click", () => {
-      const editTaskModal = document.querySelector("#edit-task-modal");
-
-      let taskId = task.id;
-      let projectId = task.projectId;
-      let newName = editTaskModal.querySelector("#task-title").value;
-      let newDescription =
-        editTaskModal.querySelector("#task-description").value;
-      let newDueDate = editTaskModal.querySelector("#task-due-date").value;
-      let activeRadioButton = editTaskModal.querySelector('[class*="active"]');
-      let newPriority = activeRadioButton.textContent;
-
-      taskModule.editTask(
-        projectId,
-        taskId,
-        newName,
-        newDescription,
-        newDueDate,
-        newPriority
-      );
-
-      document.querySelector("#edit-task-modal").style.display = "none";
-    });
-    saveToLocalStorage();
-    renderTasks(activeProject);
+    }
   }
 
   function renderMainPage() {
