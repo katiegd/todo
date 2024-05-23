@@ -204,7 +204,8 @@ div[class^="task-item"]:hover {
 }
 
 .close,
-.DV-close {
+.DV-close,
+.edit-close {
   position: absolute;
   top: 0.3rem;
   right: 1.1rem;
