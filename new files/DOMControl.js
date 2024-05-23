@@ -706,7 +706,8 @@ function DomManipulator() {
   function populateDVModal(task) {
     const DVModal = document.querySelector("#detail-view-modal");
 
-    const dueDate = new Date(task.dueDate);
+    const [year, month, day] = task.dueDate.split("-").map(Number);
+    const dueDate = new Date(year, month - 1, day);
     const formattedDueDate = dueDate.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
