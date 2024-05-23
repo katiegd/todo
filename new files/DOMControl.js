@@ -745,9 +745,11 @@ function DomManipulator() {
 
         const taskCheckboxLabel = document.createElement("label");
         taskCheckboxLabel.classList.add("task-checkbox");
-
-        taskCheckbox.addEventListener("change", (event) => {
-          event.stopPropagation();
+        taskCheckbox.addEventListener("click", (e) => {
+          e.stopPropagation();
+          console.log(e.target.id);
+        });
+        taskCheckbox.addEventListener("change", () => {
           if (taskCheckbox.checked) {
             taskItem.classList.add("checked");
           } else {
@@ -757,6 +759,10 @@ function DomManipulator() {
 
         const taskDetails = document.createElement("div");
         taskDetails.setAttribute("class", "task-details");
+        taskDetails.addEventListener("click", (e) => {
+          e.stopPropagation();
+          populateDVModal(task);
+        });
 
         const taskName = document.createElement("div");
         taskName.setAttribute("class", "task-name");
@@ -823,21 +829,6 @@ function DomManipulator() {
           button.addEventListener("click", (e) => {
             e.stopPropagation();
             populateEditModal(task);
-          });
-        });
-
-        const detailViewBtns = document.querySelectorAll("[class*=task-item]");
-        detailViewBtns.forEach((button) => {
-          button.addEventListener("click", (e) => {
-            const taskId = e.target.dataset.taskId; // Access data-task-id using dataset
-            const projectId = activeProject.id; // Assuming activeProject is set to the current project
-
-            // Get the current task
-            const task = taskModule.getTask(projectId, taskId);
-            if (task) {
-              console.log(task);
-              populateDVModal(task);
-            }
           });
         });
 
