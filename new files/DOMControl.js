@@ -80,7 +80,6 @@ function renderModals() {
       priorityLowBtn.setAttribute("type", "radio");
       priorityLowBtn.setAttribute("checked", false);
       priorityLowBtn.setAttribute("value", "low");
-      priorityLowBtn.setAttribute("required", true);
 
       const priorityMedLabel = document.createElement("label");
       priorityMedLabel.setAttribute("id", "priority");
@@ -91,7 +90,6 @@ function renderModals() {
       priorityMedBtn.setAttribute("type", "radio");
       priorityMedBtn.setAttribute("checked", false);
       priorityMedBtn.setAttribute("value", "medium");
-      priorityMedBtn.setAttribute("required", true);
 
       const priorityHighLabel = document.createElement("label");
       priorityHighLabel.setAttribute("id", "priority");
@@ -102,7 +100,6 @@ function renderModals() {
       priorityHighBtn.setAttribute("type", "radio");
       priorityHighBtn.setAttribute("checked", false);
       priorityHighBtn.setAttribute("value", "high");
-      priorityHighBtn.setAttribute("required", true);
 
       const submitTaskBtn = document.createElement("button");
       submitTaskBtn.setAttribute("id", "task-submit");
@@ -208,7 +205,6 @@ function renderModals() {
       priorityLowBtn.setAttribute("type", "radio");
       priorityLowBtn.setAttribute("checked", false);
       priorityLowBtn.setAttribute("value", "low");
-      priorityLowBtn.setAttribute("required", true);
 
       const priorityMedLabel = document.createElement("label");
       priorityMedLabel.setAttribute("id", "priority");
@@ -219,7 +215,6 @@ function renderModals() {
       priorityMedBtn.setAttribute("type", "radio");
       priorityMedBtn.setAttribute("checked", false);
       priorityMedBtn.setAttribute("value", "medium");
-      priorityMedBtn.setAttribute("required", true);
 
       const priorityHighLabel = document.createElement("label");
       priorityHighLabel.setAttribute("id", "priority");
@@ -230,7 +225,6 @@ function renderModals() {
       priorityHighBtn.setAttribute("type", "radio");
       priorityHighBtn.setAttribute("checked", false);
       priorityHighBtn.setAttribute("value", "high");
-      priorityHighBtn.setAttribute("required", true);
 
       const submitTaskBtn = document.createElement("button");
       submitTaskBtn.setAttribute("id", "edit-task-submit");
@@ -610,7 +604,8 @@ function DomManipulator() {
     }
   };
 
-  submitTaskBtn.addEventListener("click", () => {
+  submitTaskBtn.addEventListener("click", (e) => {
+    e.preventDefault();
     if (activeProject) {
       let taskTitleInput = taskModal.querySelector("#task-title").value;
       let taskDescriptionInput =
@@ -629,7 +624,6 @@ function DomManipulator() {
       const projectId = activeProject.id;
       taskModule.addTask(projectId, name, description, dueDate, priority);
       taskModal.style.display = "none";
-      console.log(priority);
 
       renderTasks(activeProject);
     }
@@ -855,47 +849,71 @@ function DomManipulator() {
 
       taskList.appendChild(taskItem);
 
-      //   const taskEditButtons = document.querySelectorAll("#task-edit");
-      // taskEditButtons.forEach((button, index) => {
-      //   button.addEventListener("click", (event) => {
-      //     this.renderEditTask(index);
-      //     event.stopPropagation();
-      //   });
-      // });
+      const taskEditButtons = document.querySelectorAll("#task-edit");
+      taskEditButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+          e.stopPropagation();
+          populateEditModal(task);
+          const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
+          editTaskSubmitBtn.addEventListener("click", () => {
+            const editTaskModal = document.querySelector("#edit-task-modal");
 
-      // const taskEditCloseBtn = document.querySelector(".edit-close");
-      // taskEditCloseBtn.addEventListener("click", () => {
-      //   document.querySelector("#edit-task-modal").style.display = "none";
-      // });
+            let taskId = task.id;
+            let projectId = task.projectId;
+            let newName = editTaskModal.querySelector("#task-title").value;
+            let newDescription =
+              editTaskModal.querySelector("#task-description").value;
+            let newDueDate =
+              editTaskModal.querySelector("#task-due-date").value;
+            let activeRadioButton =
+              editTaskModal.querySelector('[class*="active"]');
+            let newPriority = activeRadioButton.textContent;
 
-      // const detailViewBtns = document.querySelectorAll("[class*=task-item]");
-      // detailViewBtns.forEach((button, index) => {
-      //   button.addEventListener("click", () => {
-      //     const task = this.tasks[index];
-      //     DOMController.populateDVModal(task);
-      //   });
-      // });
+            taskModule.editTask(
+              projectId,
+              taskId,
+              newName,
+              newDescription,
+              newDueDate,
+              newPriority
+            );
 
-      // const dVCloseBtn = document.querySelector(".DV-close");
-      // dVCloseBtn.addEventListener("click", () => {
-      //   document.querySelector("#detail-view-modal").style.display = "none";
-      // });
+            document.querySelector("#edit-task-modal").style.display = "none";
+          });
+          saveToLocalStorage();
+          renderTasks();
+        });
+      });
+
+      const taskEditCloseBtn = document.querySelector(".edit-close");
+      taskEditCloseBtn.addEventListener("click", () => {
+        document.querySelector("#edit-task-modal").style.display = "none";
+      });
+
+      const detailViewBtns = document.querySelectorAll("[class*=task-item]");
+      detailViewBtns.forEach((button) => {
+        button.addEventListener("click", () => {
+          populateDVModal(task);
+        });
+      });
+
+      const dVCloseBtn = document.querySelector(".DV-close");
+      dVCloseBtn.addEventListener("click", () => {
+        document.querySelector("#detail-view-modal").style.display = "none";
+      });
     });
   }
 
-  function renderEditTask(index) {
-    let task = this.tasks[index];
-
-    DOMController.resetForm();
-    DOMController.editTaskModalEventListeners();
-    DOMController.populateEditModal(task);
+  function renderEditTask(task) {
+    resetForm();
+    populateEditModal(task);
 
     const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
     editTaskSubmitBtn.addEventListener("click", () => {
       const editTaskModal = document.querySelector("#edit-task-modal");
-      let taskItem = document.querySelector(`.task-item-${index}`);
-      taskItem.dataset.index = index;
 
+      let taskId = task.id;
+      let projectId = task.projectId;
       let newName = editTaskModal.querySelector("#task-title").value;
       let newDescription =
         editTaskModal.querySelector("#task-description").value;
@@ -903,23 +921,19 @@ function DomManipulator() {
       let activeRadioButton = editTaskModal.querySelector('[class*="active"]');
       let newPriority = activeRadioButton.textContent;
 
-      DOMController.editTask(
-        index,
+      taskModule.editTask(
+        projectId,
+        taskId,
         newName,
         newDescription,
         newDueDate,
         newPriority
       );
 
-      taskItem.querySelector(".task-name").textContent = newName;
-      taskItem.querySelector(".task-description").textContent = newDescription;
-      taskItem.querySelector(".task-due-date").textContent = newDueDate;
-      taskItem.querySelector(".task-priority").textContent = newPriority;
-
       document.querySelector("#edit-task-modal").style.display = "none";
     });
-    this.saveTasksToLocalStorage();
-    // this.renderNewTask();
+    saveToLocalStorage();
+    renderTasks(activeProject);
   }
 
   function renderMainPage() {
