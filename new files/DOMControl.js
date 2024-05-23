@@ -1,7 +1,15 @@
-import { loadFromLocalStorage, saveToLocalStorage } from "./localStorage.js";
+import {
+  loadFromLocalStorage,
+  loadIdFromLocalStorage,
+  saveToLocalStorage,
+} from "./localStorage.js";
 import * as projectModule from "./projects.js";
 import * as taskModule from "./tasks.js";
 
+// Eventually set active project to default project (1)
+let activeProject;
+let activeProjectId;
+let activeTaskId;
 // Initialize modals so they're accessible in DOM Manipulator
 function renderModals() {
   function renderAddTaskModal() {
@@ -376,8 +384,7 @@ renderModals();
 
 function DomManipulator() {
   const projects = projectModule.projects;
-  console.log(projects);
-  let activeProject = null;
+  activeProjectId = loadIdFromLocalStorage();
 
   // All relevant query selectors
   const projectPanel = document.querySelector("#project-panel");
@@ -413,12 +420,6 @@ function DomManipulator() {
   const editPriorityHighBtn = document.querySelector(
     "#edit-task-modal .priority-high-btn"
   );
-
-  let taskName = document.querySelector(".task-name-h1");
-  let taskTitleInput = document.querySelector("#task-title").value;
-  let taskDescriptionInput = document.querySelector("#task-description").value;
-  let taskDueDateInput = document.querySelector("#task-due-date").value;
-  let activeRadioButton = document.querySelector('[class*="active"]');
 
   // Event listeners to launch/close the task modal
   addNewTaskBtn.addEventListener("click", () => {
@@ -528,8 +529,6 @@ function DomManipulator() {
         if (activeProject) {
           renderTasks(activeProject);
           taskNameH1.textContent = activeProject.name;
-        } else {
-          console.error("Active project not found:", activeProject);
         }
       });
 
@@ -550,20 +549,20 @@ function DomManipulator() {
   }
 
   function resetForm() {
-    // priorityLowBtn.classList.remove("low-active");
-    // priorityLowBtn.setAttribute("checked", "false");
-    // priorityMedBtn.classList.remove("medium-active");
-    // priorityMedBtn.setAttribute("checked", "false");
-    // priorityHighBtn.classList.remove("high-active");
-    // priorityHighBtn.setAttribute("checked", "false");
-    // taskForm.reset();
-    // editPriorityLowBtn.classList.remove("low-active");
-    // editPriorityLowBtn.setAttribute("checked", "false");
-    // editPriorityMedBtn.classList.remove("medium-active");
-    // editPriorityMedBtn.setAttribute("checked", "false");
-    // editPriorityHighBtn.classList.remove("high-active");
-    // editPriorityHighBtn.setAttribute("checked", "false");
-    // editTaskModalForm.reset();
+    priorityLowBtn.classList.remove("low-active");
+    priorityLowBtn.setAttribute("checked", "false");
+    priorityMedBtn.classList.remove("medium-active");
+    priorityMedBtn.setAttribute("checked", "false");
+    priorityHighBtn.classList.remove("high-active");
+    priorityHighBtn.setAttribute("checked", "false");
+    taskForm.reset();
+    editPriorityLowBtn.classList.remove("low-active");
+    editPriorityLowBtn.setAttribute("checked", "false");
+    editPriorityMedBtn.classList.remove("medium-active");
+    editPriorityMedBtn.setAttribute("checked", "false");
+    editPriorityHighBtn.classList.remove("high-active");
+    editPriorityHighBtn.setAttribute("checked", "false");
+    editTaskModalForm.reset();
   }
 
   function setDateToToday() {
@@ -613,13 +612,25 @@ function DomManipulator() {
 
   submitTaskBtn.addEventListener("click", () => {
     if (activeProject) {
+      let taskTitleInput = taskModal.querySelector("#task-title").value;
+      let taskDescriptionInput =
+        taskModal.querySelector("#task-description").value;
+      let taskDueDateInput = taskModal.querySelector("#task-due-date").value;
+      let activeRadioButton = taskModal.querySelector('[class*="active"]');
+      if (!activeRadioButton || !activeRadioButton.textContent) {
+        return;
+      }
+      let taskPriorityInput = activeRadioButton.textContent;
+
       const name = taskTitleInput;
       const description = taskDescriptionInput;
       const dueDate = taskDueDateInput;
-      const priority = "Low";
+      const priority = taskPriorityInput;
       const projectId = activeProject.id;
       taskModule.addTask(projectId, name, description, dueDate, priority);
       taskModal.style.display = "none";
+      console.log(priority);
+
       renderTasks(activeProject);
     }
   });
@@ -756,10 +767,10 @@ function DomManipulator() {
   function renderTasks(activeProject) {
     clearTasks();
 
-    activeProject.tasks.forEach((task, i) => {
+    activeProject.tasks.forEach((task) => {
       const taskItem = document.createElement("div");
-      taskItem.setAttribute("class", `task-item-${i}`);
-      taskItem.dataset.index = i;
+      taskItem.setAttribute("class", `task-item`);
+      taskItem.dataset.index = task.id;
       taskItem.classList.add(`priority-${task.priority}`);
 
       const taskCheckbox = document.createElement("input");
@@ -815,9 +826,18 @@ function DomManipulator() {
 
       const taskDelete = document.createElement("img");
       taskDelete.setAttribute("id", "task-delete");
+      taskDelete.dataset.taskId = task.id;
       taskDelete.src = "../assets/delete.svg";
       taskDelete.width = "25";
       taskDelete.height = "25";
+
+      taskDelete.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activeTaskId = task.id;
+        taskModule.deleteTask(activeProject.id, activeTaskId);
+        console.log("Task Deleted.");
+        renderTasks(activeProject);
+      });
 
       taskEditDeleteDiv.appendChild(taskEdit);
       taskEditDeleteDiv.appendChild(taskDelete);
@@ -834,40 +854,33 @@ function DomManipulator() {
       taskItem.appendChild(taskDetails);
 
       taskList.appendChild(taskItem);
-    });
-    const taskEditButtons = document.querySelectorAll("#task-edit");
-    taskEditButtons.forEach((button, index) => {
-      button.addEventListener("click", (event) => {
-        this.renderEditTask(index);
-        event.stopPropagation();
-      });
-    });
 
-    // const taskEditCloseBtn = document.querySelector(".edit-close");
-    // taskEditCloseBtn.addEventListener("click", () => {
-    //   document.querySelector("#edit-task-modal").style.display = "none";
-    // });
+      //   const taskEditButtons = document.querySelectorAll("#task-edit");
+      // taskEditButtons.forEach((button, index) => {
+      //   button.addEventListener("click", (event) => {
+      //     this.renderEditTask(index);
+      //     event.stopPropagation();
+      //   });
+      // });
 
-    const taskDeleteButtons = document.querySelectorAll("#task-delete");
-    taskDeleteButtons.forEach((button, i) => {
-      button.addEventListener("click", (event) => {
-        this.removeTask(i);
-        event.stopPropagation();
-      });
+      // const taskEditCloseBtn = document.querySelector(".edit-close");
+      // taskEditCloseBtn.addEventListener("click", () => {
+      //   document.querySelector("#edit-task-modal").style.display = "none";
+      // });
+
+      // const detailViewBtns = document.querySelectorAll("[class*=task-item]");
+      // detailViewBtns.forEach((button, index) => {
+      //   button.addEventListener("click", () => {
+      //     const task = this.tasks[index];
+      //     DOMController.populateDVModal(task);
+      //   });
+      // });
+
+      // const dVCloseBtn = document.querySelector(".DV-close");
+      // dVCloseBtn.addEventListener("click", () => {
+      //   document.querySelector("#detail-view-modal").style.display = "none";
+      // });
     });
-
-    const detailViewBtns = document.querySelectorAll("[class*=task-item]");
-    detailViewBtns.forEach((button, index) => {
-      button.addEventListener("click", () => {
-        const task = this.tasks[index];
-        DOMController.populateDVModal(task);
-      });
-    });
-
-    // const dVCloseBtn = document.querySelector(".DV-close");
-    // dVCloseBtn.addEventListener("click", () => {
-    //   document.querySelector("#detail-view-modal").style.display = "none";
-    // });
   }
 
   function renderEditTask(index) {

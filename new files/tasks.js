@@ -2,7 +2,7 @@ import { projects, getProject } from "../new files/projects.js";
 import { saveToLocalStorage } from "./localStorage.js";
 
 function Tasks(projectId, name, description, dueDate, priority) {
-  let id = Date.now.toString();
+  let id = Date.now().toString();
   let checked = false;
   return {
     projectId,
@@ -18,7 +18,6 @@ function Tasks(projectId, name, description, dueDate, priority) {
 function addTask(projectId, name, description, dueDate, priority) {
   const project = getProject(projectId);
   const task = Tasks(projectId, name, description, dueDate, priority);
-  console.log(project);
   project.tasks.push(task);
   saveToLocalStorage(projects, projectId);
 }
@@ -60,4 +59,15 @@ function getTask(projectId, taskId) {
   }
 }
 
-export { addTask, editTask, getTask, deleteTask };
+function getTaskIndex(projectId, taskId) {
+  const project = getProject(projectId);
+  for (let key in project) {
+    if (key === "tasks") {
+      const taskIndex = project[key].findIndex(function (task) {
+        return task.id === taskId;
+      });
+    }
+  }
+}
+
+export { addTask, editTask, getTask, deleteTask, getTaskIndex };

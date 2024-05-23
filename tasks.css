@@ -52,7 +52,7 @@
   cursor: pointer;
 }
 
-div[class^="task-item-"] {
+div[class^="task-item"] {
   display: grid;
   grid-template-columns: 50px 1fr;
   justify-content: start;
@@ -67,7 +67,7 @@ div[class^="task-item-"] {
   transition: transform 0.3s ease;
 }
 
-div[class^="task-item-"]:hover {
+div[class^="task-item"]:hover {
   background-color: hsl(272, 10%, 19%);
   cursor: pointer;
 }
@@ -151,7 +151,7 @@ div[class^="task-item-"]:hover {
 
 .task-details {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr 1fr 60px;
+  grid-template-columns: 1fr 1fr 120px 80px 60px;
   justify-content: start;
   align-items: center;
   gap: 10px;
