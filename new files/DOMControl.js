@@ -854,35 +854,36 @@ function DomManipulator() {
         button.addEventListener("click", (e) => {
           e.stopPropagation();
           populateEditModal(task);
-          const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
-          editTaskSubmitBtn.addEventListener("click", () => {
-            const editTaskModal = document.querySelector("#edit-task-modal");
-
-            let taskId = task.id;
-            let projectId = task.projectId;
-            let newName = editTaskModal.querySelector("#task-title").value;
-            let newDescription =
-              editTaskModal.querySelector("#task-description").value;
-            let newDueDate =
-              editTaskModal.querySelector("#task-due-date").value;
-            let activeRadioButton =
-              editTaskModal.querySelector('[class*="active"]');
-            let newPriority = activeRadioButton.textContent;
-
-            taskModule.editTask(
-              projectId,
-              taskId,
-              newName,
-              newDescription,
-              newDueDate,
-              newPriority
-            );
-
-            document.querySelector("#edit-task-modal").style.display = "none";
-          });
-          saveToLocalStorage();
-          renderTasks();
         });
+      });
+
+      const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
+      editTaskSubmitBtn.addEventListener("click", () => {
+        const editTaskModal = document.querySelector("#edit-task-modal");
+
+        let taskId = task.id;
+        let projectId = task.projectId;
+        let newName = editTaskModal.querySelector("#task-title").value;
+        let newDescription =
+          editTaskModal.querySelector("#task-description").value;
+        let newDueDate = editTaskModal.querySelector("#task-due-date").value;
+        let activeRadioButton =
+          editTaskModal.querySelector('[class*="active"]');
+        let newPriority = activeRadioButton.textContent;
+
+        taskModule.editTask(
+          projectId,
+          taskId,
+          newName,
+          newDescription,
+          newDueDate,
+          newPriority
+        );
+
+        document.querySelector("#edit-task-modal").style.display = "none";
+
+        saveToLocalStorage();
+        renderTasks(activeProject);
       });
 
       const taskEditCloseBtn = document.querySelector(".edit-close");
