@@ -42,7 +42,9 @@ function editTask(
 
 function deleteTask(projectId, taskId) {
   const project = getProject(projectId);
+  console.log(project);
   const taskIndex = getTaskIndex(projectId, taskId);
+  console.log(taskIndex);
   project.tasks.splice(taskIndex, 1);
   saveToLocalStorage(projects, projectId);
 }
@@ -66,6 +68,7 @@ function getTaskIndex(projectId, taskId) {
       const taskIndex = project[key].findIndex(function (task) {
         return task.id === taskId;
       });
+      return taskIndex;
     }
   }
 }

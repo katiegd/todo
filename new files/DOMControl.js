@@ -7,9 +7,10 @@ import * as projectModule from "./projects.js";
 import * as taskModule from "./tasks.js";
 
 // Eventually set active project to default project (1)
-let activeProject;
+let activeProject = projectModule.projects[0];
 let activeProjectId;
 let activeTaskId;
+let currentTaskBeingEdited;
 // Initialize modals so they're accessible in DOM Manipulator
 function renderModals() {
   function renderAddTaskModal() {
@@ -371,8 +372,6 @@ function renderModals() {
 
 renderModals();
 
-function initialPageLoad() {}
-
 function DomManipulator() {
   const projects = projectModule.projects;
   activeProjectId = loadIdFromLocalStorage();
@@ -382,6 +381,7 @@ function DomManipulator() {
   const projectList = document.querySelector("#project-list");
   const taskModal = document.querySelector("#task-modal");
   const editModal = document.querySelector("#edit-modal");
+  const DVModal = document.querySelector("#detail-view-modal");
   const addNewTaskBtn = document.querySelector("#add-task");
   const taskForm = document.querySelector("#task-form");
   const submitTaskBtn = document.querySelector("#task-submit");
@@ -396,6 +396,7 @@ function DomManipulator() {
   const taskNameH1 = document.querySelector(".task-name-h1");
   const editprojectNameInput = editModal.querySelector(".project-name");
   const submitEditButton = editModal.querySelector("#edit-project-name-submit");
+  const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
 
   const editTaskModalForm = document.querySelector(
     "#edit-task-modal #task-form"
@@ -416,12 +417,6 @@ function DomManipulator() {
     taskModal.style.display = "block";
   });
 
-  window.onclick = function (event) {
-    if (event.target == taskModal) {
-      taskModal.style.display = "none";
-    }
-  };
-
   // Event listener to close the edit project name modal (the other is in the render function)
   window.onclick = function (event) {
     if (event.target == editModal) {
@@ -433,12 +428,14 @@ function DomManipulator() {
     if (event.type === "keydown" && event.key === "Enter") {
       let projectName = projectNameInput.value;
       if (projectName !== "") {
-        projectModule.addProject(projectName);
+        const newProject = projectModule.addProject(projectName);
+        activeProject = newProject;
 
         // Project Name input resets after enter key
         projectNameInput.value = "";
 
-        renderProjectItem();
+        renderProjectList();
+        renderTasks(activeProject);
       }
     }
   }
@@ -448,12 +445,14 @@ function DomManipulator() {
   addProjectBtn.addEventListener("click", () => {
     let projectName = projectNameInput.value;
     if (projectName !== "") {
-      projectModule.addProject(projectName);
+      const newProject = projectModule.addProject(projectName);
 
+      activeProject = newProject;
       // Project Name input resets after click
       projectNameInput.value = "";
 
-      renderProjectItem();
+      renderProjectList();
+      renderTasks(activeProject);
     }
   });
 
@@ -465,7 +464,7 @@ function DomManipulator() {
     taskList.innerHTML = "";
   }
 
-  function renderProjectItem() {
+  function renderProjectList() {
     clearProjects();
 
     projects.forEach((project) => {
@@ -532,9 +531,18 @@ function DomManipulator() {
         const projectId = project.id;
         projectModule.deleteProject(projectId);
         taskNameH1.textContent = "";
-        renderProjectItem();
+        renderProjectList(activeProject);
       });
     });
+
+    if (activeProject) {
+      const activeProjectElement = projectList.querySelector(
+        `[data-project-id='${activeProject.id}']`
+      );
+      if (activeProjectElement) {
+        activeProjectElement.classList.add("active-project");
+      }
+    }
   }
 
   function resetForm() {
@@ -583,19 +591,64 @@ function DomManipulator() {
   });
 
   // Edit task modal event listenrs
-  const priorityLowRadio = editTaskModal.querySelector(
-    'input[type="radio"][value="low"]'
-  );
-  const priorityMedRadio = editTaskModal.querySelector(
-    'input[type="radio"][value="medium"]'
-  );
-  const priorityHighRadio = editTaskModal.querySelector(
-    'input[type="radio"][value="high"]'
-  );
+  function editTaskModalEventListeners() {
+    const editTaskModal = document.querySelector("#edit-task-modal");
+    const priorityLowBtn = editTaskModal.querySelector(".priority-low-btn");
+    const priorityLowRadio = editTaskModal.querySelector(
+      'input[type="radio"][value="low"]'
+    );
+    const priorityMedBtn = editTaskModal.querySelector(".priority-medium-btn");
+    const priorityMedRadio = editTaskModal.querySelector(
+      'input[type="radio"][value="medium"]'
+    );
+    const priorityHighBtn = editTaskModal.querySelector(".priority-high-btn");
+    const priorityHighRadio = editTaskModal.querySelector(
+      'input[type="radio"][value="high"]'
+    );
+
+    priorityLowBtn.addEventListener("click", () => {
+      priorityLowBtn.classList.add("low-active");
+      priorityLowRadio.setAttribute("checked", true);
+      priorityMedBtn.classList.remove("medium-active");
+      priorityMedRadio.setAttribute("checked", false);
+      priorityHighBtn.classList.remove("high-active");
+      priorityHighRadio.setAttribute("checked", false);
+    });
+
+    priorityMedBtn.addEventListener("click", () => {
+      priorityMedBtn.classList.add("medium-active");
+      priorityMedRadio.setAttribute("checked", true);
+      priorityLowBtn.classList.remove("low-active");
+      priorityLowRadio.setAttribute("checked", false);
+      priorityHighBtn.classList.remove("high-active");
+      priorityHighRadio.setAttribute("checked", false);
+    });
+
+    priorityHighBtn.addEventListener("click", () => {
+      priorityHighBtn.classList.add("high-active");
+      priorityHighRadio.setAttribute("checked", true);
+      priorityLowBtn.classList.remove("low-active");
+      priorityLowRadio.setAttribute("checked", false);
+      priorityMedBtn.classList.remove("medium-active");
+      priorityMedRadio.setAttribute("checked", false);
+    });
+  }
 
   window.onclick = function (event) {
     if (event.target == taskModal) {
       taskModal.style.display = "none";
+    }
+  };
+
+  window.onclick = function (event) {
+    if (event.target == editTaskModal) {
+      editTaskModal.style.display = "none";
+    }
+  };
+
+  window.onclick = function (event) {
+    if (event.target == DVModal) {
+      DVModal.style.display = "none";
     }
   };
 
@@ -606,6 +659,10 @@ function DomManipulator() {
       let taskDescriptionInput =
         taskModal.querySelector("#task-description").value;
       let taskDueDateInput = taskModal.querySelector("#task-due-date").value;
+      if (!taskDueDateInput || isNaN(Date.parse(taskDueDateInput))) {
+        taskDueDateInput = "";
+      }
+
       let activeRadioButton = taskModal.querySelector('[class*="active"]');
       if (!activeRadioButton || !activeRadioButton.textContent) {
         return;
@@ -644,11 +701,12 @@ function DomManipulator() {
     projectModule.editProjectName(projectId, newName);
     editModal.style.display = "none";
     taskNameH1.textContent = newName;
-    renderProjectItem();
+    renderProjectList();
   }
 
   function populateEditModal(task) {
     resetForm();
+    editTaskModalEventListeners();
 
     editTaskModal.querySelector("#task-title").value = task.name;
     editTaskModal.querySelector("#task-description").value = task.description;
@@ -666,9 +724,6 @@ function DomManipulator() {
       `input[value="${taskPriorityText.toLowerCase()}"]`
     );
 
-    taskPriorityRadioBtn.setAttribute("checked", "true");
-
-    const editTaskSubmitBtn = document.querySelector("#edit-task-submit");
     editTaskSubmitBtn.addEventListener("click", () => {
       const editTaskModal = document.querySelector("#edit-task-modal");
 
@@ -692,8 +747,12 @@ function DomManipulator() {
 
       document.querySelector("#edit-task-modal").style.display = "none";
 
+      console.log(task.id);
+
       renderTasks(activeProject);
     });
+
+    taskPriorityRadioBtn.setAttribute("checked", "true");
 
     const taskEditCloseBtn = document.querySelector(".edit-close");
     taskEditCloseBtn.addEventListener("click", () => {
@@ -704,8 +763,6 @@ function DomManipulator() {
   }
 
   function populateDVModal(task) {
-    const DVModal = document.querySelector("#detail-view-modal");
-
     const [year, month, day] = task.dueDate.split("-").map(Number);
     const dueDate = new Date(year, month - 1, day);
     const formattedDueDate = dueDate.toLocaleDateString("en-US", {
@@ -729,6 +786,7 @@ function DomManipulator() {
 
   function renderTasks(activeProject) {
     clearTasks();
+    taskNameH1.textContent = activeProject.name;
 
     if (activeProject && activeProject.tasks) {
       activeProject.tasks.forEach((task) => {
@@ -748,7 +806,6 @@ function DomManipulator() {
         taskCheckboxLabel.classList.add("task-checkbox");
         taskCheckbox.addEventListener("click", (e) => {
           e.stopPropagation();
-          console.log(e.target.id);
         });
         taskCheckbox.addEventListener("change", () => {
           if (taskCheckbox.checked) {
@@ -774,12 +831,16 @@ function DomManipulator() {
         taskDescription.textContent = task.description;
 
         const taskDueDate = document.createElement("div");
-        const dueDate = new Date(task.dueDate);
-        const formattedDueDate = `${dueDate.toLocaleString("en-US", {
-          month: "short",
-        })} ${dueDate.getDate() + 1}, ${dueDate.getFullYear()}`;
-        taskDueDate.setAttribute("class", "task-due-date");
-        taskDueDate.textContent = `Due: ${formattedDueDate}`;
+        if (task.dueDate) {
+          const dueDate = new Date(task.dueDate);
+          const formattedDueDate = `${dueDate.toLocaleString("en-US", {
+            month: "short",
+          })} ${dueDate.getDate() + 1}, ${dueDate.getFullYear()}`;
+          taskDueDate.setAttribute("class", "task-due-date");
+          taskDueDate.textContent = `Due: ${formattedDueDate}`;
+        } else {
+          taskDueDate.textContent = "";
+        }
 
         const taskPriority = document.createElement("div");
         taskPriority.setAttribute("class", "task-priority");
@@ -801,14 +862,6 @@ function DomManipulator() {
         taskDelete.width = "25";
         taskDelete.height = "25";
 
-        taskDelete.addEventListener("click", (e) => {
-          e.stopPropagation();
-          activeTaskId = task.id;
-          taskModule.deleteTask(activeProject.id, activeTaskId);
-          console.log("Task Deleted.");
-          renderTasks(activeProject);
-        });
-
         taskEditDeleteDiv.appendChild(taskEdit);
         taskEditDeleteDiv.appendChild(taskDelete);
 
@@ -825,28 +878,33 @@ function DomManipulator() {
 
         taskList.appendChild(taskItem);
 
-        const taskEditButtons = document.querySelectorAll("#task-edit");
-        taskEditButtons.forEach((button) => {
-          button.addEventListener("click", (e) => {
-            e.stopPropagation();
-            populateEditModal(task);
-          });
+        taskEdit.addEventListener("click", (e) => {
+          e.stopPropagation();
+          populateEditModal(task);
         });
 
-        const dVCloseBtn = document.querySelector(".DV-close");
-        dVCloseBtn.addEventListener("click", () => {
-          document.querySelector("#detail-view-modal").style.display = "none";
+        taskDelete.addEventListener("click", (e) => {
+          e.stopPropagation();
+          console.log("Deleted! " + task.id);
+          const projectId = activeProject.id;
+          const taskId = task.id;
+          taskModule.deleteTask(projectId, taskId);
+          renderTasks(activeProject);
         });
+      });
+
+      const dVCloseBtn = document.querySelector(".DV-close");
+      dVCloseBtn.addEventListener("click", () => {
+        document.querySelector("#detail-view-modal").style.display = "none";
       });
     }
   }
 
-  function renderMainPage() {
-    renderProjectItem();
-    renderTasks();
+  function initialPageLoad() {
+    renderProjectList();
+    renderTasks(activeProject);
   }
-
-  renderMainPage();
+  initialPageLoad();
 }
 
 export { DomManipulator };

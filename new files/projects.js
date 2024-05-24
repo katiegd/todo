@@ -19,6 +19,7 @@ function Project(name) {
 // Adds project to projects array. If a project exists with the same name, will be incremented +1.
 function addProject(name) {
   let project;
+  const newProject = Project(name);
 
   const dupeProjects = projects.filter(function (project) {
     return project.name.startsWith(name);
@@ -35,6 +36,7 @@ function addProject(name) {
 
   projects.push(project);
   saveToLocalStorage(projects, projectId);
+  return newProject;
 }
 
 function editProjectName(projectId, newName) {
