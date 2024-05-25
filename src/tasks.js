@@ -1,4 +1,4 @@
-import { projects, getProject } from "../new files/projects.js";
+import { projects, getProject } from "./projects.js";
 import { saveToLocalStorage } from "./localStorage.js";
 
 function Tasks(projectId, name, description, dueDate, priority) {

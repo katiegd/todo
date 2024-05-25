@@ -1,16 +1,21 @@
-import {
-  loadFromLocalStorage,
-  loadIdFromLocalStorage,
-  saveToLocalStorage,
-} from "./localStorage.js";
+import { loadIdFromLocalStorage } from "./localStorage.js";
 import * as projectModule from "./projects.js";
 import * as taskModule from "./tasks.js";
 
-// Eventually set active project to default project (1)
+import checkWhiteIcon from "./assets/checkWhite.svg";
+import checkIcon from "./assets/check.svg";
+import deleteIcon from "./assets/delete.svg";
+import editIcon from "./assets/edit.svg";
+
+checkWhiteIcon.src = checkWhiteIcon;
+checkIcon.src = checkIcon;
+deleteIcon.src = deleteIcon;
+editIcon.src = editIcon;
+
+// Set active project to default project initially
 let activeProject = projectModule.projects[0];
 let activeProjectId;
-let activeTaskId;
-let currentTaskBeingEdited;
+
 // Initialize modals so they're accessible in DOM Manipulator
 function renderModals() {
   function renderAddTaskModal() {
@@ -464,8 +469,62 @@ function DomManipulator() {
     taskList.innerHTML = "";
   }
 
+  function renderDefaultProject() {
+    const defaultProject = projects.find((project) => project.isDefault);
+    if (defaultProject) {
+      const projectItem = document.createElement("div");
+      projectItem.setAttribute("id", "project-item");
+      projectItem.dataset.projectId = defaultProject.id;
+
+      const projectName = document.createElement("div");
+      projectName.textContent = defaultProject.name;
+      projectName.setAttribute("id", "project-item-name");
+
+      const projectEditDeleteDiv = document.createElement("div");
+      projectEditDeleteDiv.setAttribute("id", "edit-delete");
+
+      const projectEdit = document.createElement("img");
+      projectEdit.setAttribute("id", "project-edit");
+      projectEdit.src = "./assets/edit.svg";
+      projectEdit.width = "25";
+      projectEdit.height = "25";
+
+      projectEditDeleteDiv.appendChild(projectEdit);
+
+      projectItem.appendChild(projectName);
+      projectItem.appendChild(projectEditDeleteDiv);
+
+      projectList.appendChild(projectItem);
+      projectPanel.appendChild(projectList);
+
+      projectItem.addEventListener("click", () => {
+        projectItem.classList.add("active-project");
+      });
+
+      projectItem.addEventListener("click", () => {
+        taskNameH1.textContent = defaultProject.name;
+        activeProject = projectModule.getProject(projectItem.dataset.projectId);
+        if (activeProject) {
+          renderTasks(activeProject);
+          taskNameH1.textContent = activeProject.name;
+        }
+      });
+
+      projectEdit.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const projectId = defaultProject.id;
+        populateEditProjectNameModal(projectId);
+      });
+    }
+  }
+
   function renderProjectList() {
     clearProjects();
+    renderDefaultProject();
+
+    const projects = projectModule.projects.filter(
+      (project) => !project.isDefault
+    );
 
     projects.forEach((project) => {
       const projectItem = document.createElement("div");
@@ -531,7 +590,9 @@ function DomManipulator() {
         const projectId = project.id;
         projectModule.deleteProject(projectId);
         taskNameH1.textContent = "";
+        activeProject = projectModule.defaultProject;
         renderProjectList(activeProject);
+        renderTasks(activeProject);
       });
     });
 
@@ -851,14 +912,14 @@ function DomManipulator() {
 
         const taskEdit = document.createElement("img");
         taskEdit.setAttribute("id", "task-edit");
-        taskEdit.src = "../assets/edit.svg";
+        taskEdit.src = "./assets/edit.svg";
         taskEdit.width = "25";
         taskEdit.height = "25";
 
         const taskDelete = document.createElement("img");
         taskDelete.setAttribute("id", "task-delete");
         taskDelete.dataset.taskId = task.id;
-        taskDelete.src = "../assets/delete.svg";
+        taskDelete.src = "./assets/delete.svg";
         taskDelete.width = "25";
         taskDelete.height = "25";
 
