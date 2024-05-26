@@ -1,7 +1,5 @@
 import { saveToLocalStorage, loadFromLocalStorage } from "./localStorage.js";
 
-let projects = loadFromLocalStorage() || [defaultProject];
-
 function Project(name) {
   let id = Date.now().toString();
   let tasks = [];
@@ -40,6 +38,8 @@ const defaultProject = {
   ],
   isDefault: true,
 };
+
+let projects = loadFromLocalStorage() || [defaultProject];
 
 // Adds project to projects array. If a project exists with the same name, will be incremented +1.
 function addProject(name) {

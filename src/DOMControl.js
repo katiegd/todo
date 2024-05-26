@@ -7,12 +7,12 @@ import checkIcon from "./assets/check.svg";
 import deleteIcon from "./assets/delete.svg";
 import editIcon from "./assets/edit.svg";
 
-checkWhiteIcon.src = checkWhiteIcon;
-checkIcon.src = checkIcon;
-deleteIcon.src = deleteIcon;
-editIcon.src = editIcon;
+// checkWhiteIcon.src = checkWhiteIcon;
+// checkIcon.src = checkIcon;
+// deleteIcon.src = deleteIcon;
+// editIcon.src = editIcon;
 
-// Set active project to default project initially
+// Set active project to default project innitially
 let activeProject = projectModule.projects[0];
 let activeProjectId;
 
@@ -485,7 +485,7 @@ function DomManipulator() {
 
       const projectEdit = document.createElement("img");
       projectEdit.setAttribute("id", "project-edit");
-      projectEdit.src = "./assets/edit.svg";
+      projectEdit.src = editIcon;
       projectEdit.width = "25";
       projectEdit.height = "25";
 
@@ -540,13 +540,13 @@ function DomManipulator() {
 
       const projectEdit = document.createElement("img");
       projectEdit.setAttribute("id", "project-edit");
-      projectEdit.src = "../assets/edit.svg";
+      projectEdit.src = editIcon;
       projectEdit.width = "25";
       projectEdit.height = "25";
 
       const projectDelete = document.createElement("img");
       projectDelete.setAttribute("id", "project-delete");
-      projectDelete.src = "../assets/delete.svg";
+      projectDelete.src = deleteIcon;
       projectDelete.width = "25";
       projectDelete.height = "25";
 
@@ -912,14 +912,14 @@ function DomManipulator() {
 
         const taskEdit = document.createElement("img");
         taskEdit.setAttribute("id", "task-edit");
-        taskEdit.src = "./assets/edit.svg";
+        taskEdit.src = editIcon;
         taskEdit.width = "25";
         taskEdit.height = "25";
 
         const taskDelete = document.createElement("img");
         taskDelete.setAttribute("id", "task-delete");
         taskDelete.dataset.taskId = task.id;
-        taskDelete.src = "./assets/delete.svg";
+        taskDelete.src = deleteIcon;
         taskDelete.width = "25";
         taskDelete.height = "25";
 

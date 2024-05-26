@@ -1,1 +1,43 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Tasky - To Do List</title><link rel="stylesheet" href="./style.css"/><script type="module" src="./bundle.js" defer="defer"></script><script defer="defer" src="bundle.js"></script></head><body><header id="site-header">tasky <img src="./src/assets/check.svg" height="40px"/><img src="./src/assets/check.svg" height="40px"/><img src="./src/assets/checkWhite.svg" height="40px"/></header><div id="main-container"><div id="project-panel"><h1>Projects</h1><div id="new-project-input"><input placeholder="New Project..." id="project-name-input"/><button id="add-project">+</button></div><div id="main-project-container"><div id="project-list"></div></div></div><div id="task-panel"><div id="tasks-header"><h1 class="task-name-h1"></h1><button id="add-task">+</button></div><div id="task-list"></div></div></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tasky - To Do List</title>
+    <link rel="text/html" href="src/style.css" />
+    <script type="module" src="./main.js" defer></script>
+    <script defer src="runtime.js"></script>
+    <script defer src="main.js"></script>
+  </head>
+  <body>
+    <header id="site-header">
+      tasky
+      <!-- <img src="./assets/check.svg" height="40px" /><img
+        src="./assets/check.svg"
+        height="40px"
+      /><img src="./assets/checkWhite.svg" height="40px" /> -->
+    </header>
+    <div id="main-container">
+      <div id="project-panel">
+        <h1>Projects</h1>
+        <div id="new-project-input">
+          <input
+            type="text"
+            placeholder="New Project..."
+            id="project-name-input"
+          /><button id="add-project">+</button>
+        </div>
+        <div id="main-project-container">
+          <div id="project-list"></div>
+        </div>
+      </div>
+      <div id="task-panel">
+        <div id="tasks-header">
+          <h1 class="task-name-h1"></h1>
+          <button id="add-task">+</button>
+        </div>
+        <div id="task-list"></div>
+      </div>
+    </div>
+  </body>
+</html>
