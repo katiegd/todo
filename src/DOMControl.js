@@ -31,7 +31,6 @@ function renderModals() {
 
       const taskForm = document.createElement("form");
       taskForm.setAttribute("id", "task-form");
-      taskForm.setAttribute("action", "");
 
       const closeBtn = document.createElement("span");
       closeBtn.setAttribute("class", "close");
@@ -45,6 +44,7 @@ function renderModals() {
       titleInput.setAttribute("type", "text");
       titleInput.setAttribute("id", "task-title");
       titleInput.setAttribute("placeholder", "e.g. Water plants");
+      titleInput.setAttribute("required", "");
 
       const descriptionLabel = document.createElement("label");
       descriptionLabel.setAttribute("for", "description");
@@ -78,35 +78,17 @@ function renderModals() {
       priorityLabel.setAttribute("for", "priority");
       priorityLabel.textContent = "Priority:";
 
-      const priorityLowLabel = document.createElement("label");
-      priorityLowLabel.setAttribute("id", "priority");
-      priorityLowLabel.setAttribute("class", "priority-low-btn");
-      priorityLowLabel.textContent = "Low";
+      const priorityLowBtn = document.createElement("label");
+      priorityLowBtn.setAttribute("class", "priority-low-btn");
+      priorityLowBtn.textContent = "Low";
 
-      const priorityLowBtn = document.createElement("input");
-      priorityLowBtn.setAttribute("type", "radio");
-      priorityLowBtn.setAttribute("checked", false);
-      priorityLowBtn.setAttribute("value", "low");
+      const priorityMedBtn = document.createElement("label");
+      priorityMedBtn.setAttribute("class", "priority-medium-btn");
+      priorityMedBtn.textContent = "Medium";
 
-      const priorityMedLabel = document.createElement("label");
-      priorityMedLabel.setAttribute("id", "priority");
-      priorityMedLabel.setAttribute("class", "priority-medium-btn");
-      priorityMedLabel.textContent = "Medium";
-
-      const priorityMedBtn = document.createElement("input");
-      priorityMedBtn.setAttribute("type", "radio");
-      priorityMedBtn.setAttribute("checked", false);
-      priorityMedBtn.setAttribute("value", "medium");
-
-      const priorityHighLabel = document.createElement("label");
-      priorityHighLabel.setAttribute("id", "priority");
-      priorityHighLabel.setAttribute("class", "priority-high-btn");
-      priorityHighLabel.textContent = "High";
-
-      const priorityHighBtn = document.createElement("input");
-      priorityHighBtn.setAttribute("type", "radio");
-      priorityHighBtn.setAttribute("checked", false);
-      priorityHighBtn.setAttribute("value", "high");
+      const priorityHighBtn = document.createElement("label");
+      priorityHighBtn.setAttribute("class", "priority-high-btn");
+      priorityHighBtn.textContent = "High";
 
       const submitTaskBtn = document.createElement("button");
       submitTaskBtn.setAttribute("id", "task-submit");
@@ -116,11 +98,8 @@ function renderModals() {
       dateDiv.appendChild(dateInput);
 
       priorityDiv.appendChild(priorityLabel);
-      priorityDiv.appendChild(priorityLowLabel);
       priorityDiv.appendChild(priorityLowBtn);
-      priorityDiv.appendChild(priorityMedLabel);
       priorityDiv.appendChild(priorityMedBtn);
-      priorityDiv.appendChild(priorityHighLabel);
       priorityDiv.appendChild(priorityHighBtn);
 
       datePriorityDiv.appendChild(dateDiv);
@@ -156,7 +135,7 @@ function renderModals() {
 
       const taskForm = document.createElement("form");
       taskForm.setAttribute("id", "task-form");
-      taskForm.setAttribute("action", "");
+      // taskForm.setAttribute("action", "");
 
       const closeBtn = document.createElement("span");
       closeBtn.setAttribute("class", "edit-close");
@@ -203,35 +182,17 @@ function renderModals() {
       priorityLabel.setAttribute("for", "priority");
       priorityLabel.textContent = "Priority:";
 
-      const priorityLowLabel = document.createElement("label");
-      priorityLowLabel.setAttribute("id", "priority");
-      priorityLowLabel.setAttribute("class", "priority-low-btn");
-      priorityLowLabel.textContent = "Low";
+      const priorityLowBtn = document.createElement("label");
+      priorityLowBtn.setAttribute("class", "priority-low-btn");
+      priorityLowBtn.textContent = "Low";
 
-      const priorityLowBtn = document.createElement("input");
-      priorityLowBtn.setAttribute("type", "radio");
-      priorityLowBtn.setAttribute("checked", false);
-      priorityLowBtn.setAttribute("value", "low");
+      const priorityMedBtn = document.createElement("label");
+      priorityMedBtn.setAttribute("class", "priority-medium-btn");
+      priorityMedBtn.textContent = "Medium";
 
-      const priorityMedLabel = document.createElement("label");
-      priorityMedLabel.setAttribute("id", "priority");
-      priorityMedLabel.setAttribute("class", "priority-medium-btn");
-      priorityMedLabel.textContent = "Medium";
-
-      const priorityMedBtn = document.createElement("input");
-      priorityMedBtn.setAttribute("type", "radio");
-      priorityMedBtn.setAttribute("checked", false);
-      priorityMedBtn.setAttribute("value", "medium");
-
-      const priorityHighLabel = document.createElement("label");
-      priorityHighLabel.setAttribute("id", "priority");
-      priorityHighLabel.setAttribute("class", "priority-high-btn");
-      priorityHighLabel.textContent = "High";
-
-      const priorityHighBtn = document.createElement("input");
-      priorityHighBtn.setAttribute("type", "radio");
-      priorityHighBtn.setAttribute("checked", false);
-      priorityHighBtn.setAttribute("value", "high");
+      const priorityHighBtn = document.createElement("label");
+      priorityHighBtn.setAttribute("class", "priority-high-btn");
+      priorityHighBtn.textContent = "High";
 
       const submitTaskBtn = document.createElement("button");
       submitTaskBtn.setAttribute("id", "edit-task-submit");
@@ -241,11 +202,8 @@ function renderModals() {
       dateDiv.appendChild(dateInput);
 
       priorityDiv.appendChild(priorityLabel);
-      priorityDiv.appendChild(priorityLowLabel);
       priorityDiv.appendChild(priorityLowBtn);
-      priorityDiv.appendChild(priorityMedLabel);
       priorityDiv.appendChild(priorityMedBtn);
-      priorityDiv.appendChild(priorityHighLabel);
       priorityDiv.appendChild(priorityHighBtn);
 
       datePriorityDiv.appendChild(dateDiv);
@@ -467,6 +425,10 @@ function DomManipulator() {
     e.preventDefault();
     if (activeProject) {
       let taskTitleInput = taskModal.querySelector("#task-title").value;
+      if (!taskTitleInput) {
+        alert("Please enter a task name.");
+        return;
+      }
       let taskDescriptionInput =
         taskModal.querySelector("#task-description").value;
       let taskDueDateInput = taskModal.querySelector("#task-due-date").value;
@@ -475,10 +437,13 @@ function DomManipulator() {
       }
 
       let activeRadioButton = taskModal.querySelector('[class*="active"]');
-      if (!activeRadioButton || !activeRadioButton.textContent) {
-        return;
+
+      let taskPriorityInput = "";
+
+      if (activeRadioButton) {
+        taskPriorityInput = activeRadioButton.textContent;
       }
-      let taskPriorityInput = activeRadioButton.textContent;
+
       const name = taskTitleInput;
       const description = taskDescriptionInput;
       const dueDate = taskDueDateInput;
@@ -638,47 +603,32 @@ function DomManipulator() {
 
   function resetForm() {
     priorityLowBtn.classList.remove("low-active");
-    priorityLowBtn.setAttribute("checked", "false");
     priorityMedBtn.classList.remove("medium-active");
-    priorityMedBtn.setAttribute("checked", "false");
     priorityHighBtn.classList.remove("high-active");
-    priorityHighBtn.setAttribute("checked", "false");
     taskForm.reset();
     editPriorityLowBtn.classList.remove("low-active");
-    editPriorityLowBtn.setAttribute("checked", "false");
     editPriorityMedBtn.classList.remove("medium-active");
-    editPriorityMedBtn.setAttribute("checked", "false");
     editPriorityHighBtn.classList.remove("high-active");
-    editPriorityHighBtn.setAttribute("checked", "false");
     editTaskModalForm.reset();
   }
 
   //Task Modal Event Listeners
   priorityLowBtn.addEventListener("click", () => {
     priorityLowBtn.classList.toggle("low-active");
-    priorityLowBtn.setAttribute("checked", true);
     priorityMedBtn.classList.remove("medium-active");
-    priorityMedBtn.setAttribute("checked", false);
     priorityHighBtn.classList.remove("high-active");
-    priorityHighBtn.setAttribute("checked", false);
   });
 
   priorityMedBtn.addEventListener("click", () => {
     priorityMedBtn.classList.toggle("medium-active");
-    priorityMedBtn.setAttribute("checked", true);
     priorityLowBtn.classList.remove("low-active");
-    priorityLowBtn.setAttribute("checked", false);
     priorityHighBtn.classList.remove("high-active");
-    priorityHighBtn.setAttribute("checked", false);
   });
 
   priorityHighBtn.addEventListener("click", () => {
     priorityHighBtn.classList.toggle("high-active");
-    priorityHighBtn.setAttribute("checked", true);
     priorityLowBtn.classList.remove("low-active");
-    priorityLowBtn.setAttribute("checked", false);
     priorityMedBtn.classList.remove("medium-active");
-    priorityMedBtn.setAttribute("checked", false);
   });
 
   // Edit task modal event listenrs
@@ -699,29 +649,20 @@ function DomManipulator() {
 
     priorityLowBtn.addEventListener("click", () => {
       priorityLowBtn.classList.add("low-active");
-      priorityLowRadio.setAttribute("checked", true);
       priorityMedBtn.classList.remove("medium-active");
-      priorityMedRadio.setAttribute("checked", false);
       priorityHighBtn.classList.remove("high-active");
-      priorityHighRadio.setAttribute("checked", false);
     });
 
     priorityMedBtn.addEventListener("click", () => {
       priorityMedBtn.classList.add("medium-active");
-      priorityMedRadio.setAttribute("checked", true);
       priorityLowBtn.classList.remove("low-active");
-      priorityLowRadio.setAttribute("checked", false);
       priorityHighBtn.classList.remove("high-active");
-      priorityHighRadio.setAttribute("checked", false);
     });
 
     priorityHighBtn.addEventListener("click", () => {
       priorityHighBtn.classList.add("high-active");
-      priorityHighRadio.setAttribute("checked", true);
       priorityLowBtn.classList.remove("low-active");
-      priorityLowRadio.setAttribute("checked", false);
       priorityMedBtn.classList.remove("medium-active");
-      priorityMedRadio.setAttribute("checked", false);
     });
   }
 
@@ -785,13 +726,8 @@ function DomManipulator() {
         `${taskPriorityText.toLowerCase()}-active`
       );
     }
-    let taskPriorityRadioBtn = editTaskModal.querySelector(
-      `input[value="${taskPriorityText.toLowerCase()}"]`
-    );
 
     editTaskSubmitBtn.addEventListener("click", saveEditTask, { once: true });
-
-    taskPriorityRadioBtn.setAttribute("checked", "true");
 
     const taskEditCloseBtn = document.querySelector(".edit-close");
     taskEditCloseBtn.addEventListener("click", () => {
@@ -971,7 +907,6 @@ function DomManipulator() {
 
         taskDelete.addEventListener("click", (e) => {
           e.stopPropagation();
-          console.log("Deleted! " + task.id);
           const projectId = activeProject.id;
           const taskId = task.id;
           taskModule.deleteTask(projectId, taskId);

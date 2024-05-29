@@ -150,6 +150,10 @@ div[class^="task-item"]:hover {
   box-shadow: -10px 0px 0px hsl(0, 70%, 35%);
 }
 
+.priority- {
+  box-shadow: -10px 0px 0px hsl(0, 0%, 25%);
+}
+
 .task-details {
   display: grid;
   grid-template-columns: 200px 1fr 120px 80px 60px;
