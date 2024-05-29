@@ -100,7 +100,8 @@ div[class^="task-item"]:hover {
   left: 5px;
   height: 20px;
   width: 20px;
-  background-color: #eee;
+  border-radius: 50%;
+  background-color: #a0a0a0;
 }
 
 .task-checkbox:hover input ~ .checkmark {
@@ -151,31 +152,30 @@ div[class^="task-item"]:hover {
 }
 
 .priority- {
-  box-shadow: -10px 0px 0px hsl(0, 0%, 25%);
+  box-shadow: -10px 0px 0px var(--dark-purple);
 }
 
 .task-details {
   display: grid;
-  grid-template-columns: 200px 1fr 120px 80px 60px;
+  grid-template-columns: 1fr 1fr 1fr 80px 60px;
   justify-content: start;
   align-items: center;
   gap: 10px;
 }
 
 .task-name {
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #a0a0a0;
+  margin-left: 10px;
 }
 
 .task-description,
-.task-due-date {
-  font-size: 0.9rem;
-  font-weight: 100;
-}
-
+.task-due-date,
 .task-priority {
-  font-size: 0.9rem;
-  font-weight: 100;
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.5;
 }
 
 .modal {
