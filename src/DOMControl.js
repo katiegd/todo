@@ -1,4 +1,4 @@
-import { loadIdFromLocalStorage } from "./localStorage.js";
+import { loadIdFromLocalStorage, saveToLocalStorage } from "./localStorage.js";
 import * as projectModule from "./projects.js";
 import * as taskModule from "./tasks.js";
 
@@ -870,6 +870,27 @@ function DomManipulator() {
         const taskCheckbox = document.createElement("input");
         taskCheckbox.setAttribute("type", "checkbox");
         taskCheckbox.setAttribute("id", "task-checkbox");
+        taskCheckbox.checked = task.checked || false;
+
+        if (task.checked) {
+          taskItem.classList.add("checked");
+        } else {
+          taskItem.classList.remove("checked");
+        }
+
+        taskCheckbox.addEventListener("change", () => {
+          task.checked = taskCheckbox.checked;
+
+          if (task.checked) {
+            taskItem.classList.add("checked");
+            taskModule.moveTaskToEnd(activeProject.id, task.id);
+          } else {
+            task.checked = false;
+            taskItem.classList.remove("checked");
+            saveToLocalStorage(projectModule.projects, activeProject.id);
+          }
+          renderTasks(activeProject);
+        });
 
         const taskCheckboxCustom = document.createElement("span");
         taskCheckboxCustom.setAttribute("class", "checkmark");
@@ -878,13 +899,6 @@ function DomManipulator() {
         taskCheckboxLabel.classList.add("task-checkbox");
         taskCheckbox.addEventListener("click", (e) => {
           e.stopPropagation();
-        });
-        taskCheckbox.addEventListener("change", () => {
-          if (taskCheckbox.checked) {
-            taskItem.classList.add("checked");
-          } else {
-            taskItem.classList.remove("checked");
-          }
         });
 
         const taskDetails = document.createElement("div");

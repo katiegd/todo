@@ -19,9 +19,7 @@ function addTask(projectId, name, description, dueDate, priority) {
   const project = getProject(projectId);
   const task = Tasks(projectId, name, description, dueDate, priority);
   project.tasks.push(task);
-
   saveToLocalStorage(projects, projectId);
-  console.log("Tasks after addition:", project.tasks); // Check task addition
 }
 
 function editTask(
@@ -75,4 +73,16 @@ function getTaskIndex(projectId, taskId) {
   }
 }
 
-export { addTask, editTask, getTask, deleteTask, getTaskIndex };
+function moveTaskToEnd(projectId, taskId) {
+  const project = getProject(projectId);
+  const taskIndex = project.tasks.findIndex((task) => task.id === taskId);
+  if (taskIndex > -1) {
+    const [task] = project.tasks.splice(taskIndex, 1);
+    task.checked = true;
+    project.tasks.push(task);
+
+    saveToLocalStorage(projects, projectId);
+  }
+}
+
+export { addTask, editTask, getTask, deleteTask, getTaskIndex, moveTaskToEnd };
