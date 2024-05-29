@@ -19,7 +19,9 @@ function addTask(projectId, name, description, dueDate, priority) {
   const project = getProject(projectId);
   const task = Tasks(projectId, name, description, dueDate, priority);
   project.tasks.push(task);
+
   saveToLocalStorage(projects, projectId);
+  console.log("Tasks after addition:", project.tasks); // Check task addition
 }
 
 function editTask(

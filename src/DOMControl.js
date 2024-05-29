@@ -15,6 +15,7 @@ import editIcon from "./assets/edit.svg";
 // Set active project to default project innitially
 let activeProject = projectModule.projects[0];
 let activeProjectId;
+let activeTask;
 
 // Initialize modals so they're accessible in DOM Manipulator
 function renderModals() {
@@ -419,6 +420,7 @@ function DomManipulator() {
   // Event listeners to launch/close the task modal
   addNewTaskBtn.addEventListener("click", () => {
     resetForm();
+    activeProject = activeProject;
     taskModal.style.display = "block";
   });
 
@@ -457,6 +459,34 @@ function DomManipulator() {
       projectNameInput.value = "";
 
       renderProjectList();
+      renderTasks(activeProject);
+    }
+  });
+
+  submitTaskBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (activeProject) {
+      let taskTitleInput = taskModal.querySelector("#task-title").value;
+      let taskDescriptionInput =
+        taskModal.querySelector("#task-description").value;
+      let taskDueDateInput = taskModal.querySelector("#task-due-date").value;
+      if (!taskDueDateInput || isNaN(Date.parse(taskDueDateInput))) {
+        taskDueDateInput = "";
+      }
+
+      let activeRadioButton = taskModal.querySelector('[class*="active"]');
+      if (!activeRadioButton || !activeRadioButton.textContent) {
+        return;
+      }
+      let taskPriorityInput = activeRadioButton.textContent;
+      const name = taskTitleInput;
+      const description = taskDescriptionInput;
+      const dueDate = taskDueDateInput;
+      const priority = taskPriorityInput;
+      const projectId = activeProject.id;
+      taskModule.addTask(projectId, name, description, dueDate, priority);
+      taskModal.style.display = "none";
+
       renderTasks(activeProject);
     }
   });
@@ -713,34 +743,6 @@ function DomManipulator() {
     }
   };
 
-  submitTaskBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    if (activeProject) {
-      let taskTitleInput = taskModal.querySelector("#task-title").value;
-      let taskDescriptionInput =
-        taskModal.querySelector("#task-description").value;
-      let taskDueDateInput = taskModal.querySelector("#task-due-date").value;
-      if (!taskDueDateInput || isNaN(Date.parse(taskDueDateInput))) {
-        taskDueDateInput = "";
-      }
-
-      let activeRadioButton = taskModal.querySelector('[class*="active"]');
-      if (!activeRadioButton || !activeRadioButton.textContent) {
-        return;
-      }
-      let taskPriorityInput = activeRadioButton.textContent;
-      const name = taskTitleInput;
-      const description = taskDescriptionInput;
-      const dueDate = taskDueDateInput;
-      const priority = taskPriorityInput;
-      const projectId = activeProject.id;
-      taskModule.addTask(projectId, name, description, dueDate, priority);
-      taskModal.style.display = "none";
-
-      renderTasks(activeProject);
-    }
-  });
-
   function populateEditProjectNameModal(projectId) {
     editModal.style.display = "block";
     const project = projectModule.getProject(projectId);
@@ -768,6 +770,8 @@ function DomManipulator() {
   function populateEditModal(task) {
     resetForm();
     editTaskModalEventListeners();
+    activeTask = task;
+    console.log(activeTask);
 
     editTaskModal.querySelector("#task-title").value = task.name;
     editTaskModal.querySelector("#task-description").value = task.description;
@@ -785,33 +789,7 @@ function DomManipulator() {
       `input[value="${taskPriorityText.toLowerCase()}"]`
     );
 
-    editTaskSubmitBtn.addEventListener("click", () => {
-      const editTaskModal = document.querySelector("#edit-task-modal");
-
-      let projectId = task.projectId;
-      let taskId = task.id;
-      let newName = editTaskModal.querySelector("#task-title").value;
-      let newDescription =
-        editTaskModal.querySelector("#task-description").value;
-      let newDueDate = editTaskModal.querySelector("#task-due-date").value;
-      let activeRadioButton = editTaskModal.querySelector('[class*="active"]');
-      let newPriority = activeRadioButton.textContent;
-
-      taskModule.editTask(
-        projectId,
-        taskId,
-        newName,
-        newDescription,
-        newDueDate,
-        newPriority
-      );
-
-      document.querySelector("#edit-task-modal").style.display = "none";
-
-      console.log(task.id);
-
-      renderTasks(activeProject);
-    });
+    editTaskSubmitBtn.addEventListener("click", saveEditTask, { once: true });
 
     taskPriorityRadioBtn.setAttribute("checked", "true");
 
@@ -821,6 +799,39 @@ function DomManipulator() {
     });
 
     editTaskModal.style.display = "block";
+  }
+
+  function saveEditTask() {
+    const editTaskModal = document.querySelector("#edit-task-modal");
+    console.log(activeTask);
+    let projectId = activeTask.projectId;
+    let taskId = activeTask.id;
+    let newName = editTaskModal.querySelector("#task-title").value;
+    let newDescription = editTaskModal.querySelector("#task-description").value;
+    let newDueDate = editTaskModal.querySelector("#task-due-date").value;
+    let activeRadioButton = editTaskModal.querySelector('[class*="active"]');
+    let newPriority = activeRadioButton.textContent;
+
+    if (typeof projectId === "undefined" || typeof taskId === "undefined") {
+      console.error("Task projectId or id is undefined.");
+      return;
+    }
+
+    console.log(newName);
+    taskModule.editTask(
+      projectId,
+      taskId,
+      newName,
+      newDescription,
+      newDueDate,
+      newPriority
+    );
+
+    document.querySelector("#edit-task-modal").style.display = "none";
+
+    renderTasks(activeProject);
+    activeTask = null;
+    editTaskSubmitBtn.removeEventListener("click", saveEditTask);
   }
 
   function populateDVModal(task) {
@@ -958,6 +969,8 @@ function DomManipulator() {
       dVCloseBtn.addEventListener("click", () => {
         document.querySelector("#detail-view-modal").style.display = "none";
       });
+    } else {
+      console.log("Active Project not found");
     }
   }
 
