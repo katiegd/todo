@@ -1,7 +1,7 @@
 # Tasky To-Do App<br>
 Live Demo: https://katiegd.github.io/todo/
 
-<img src="https://i.postimg.cc/bJmJcJxz/Screenshot-2024-05-29-at-1-45-16-PM.png" alt="Tasky App" border="0"><br><br>
+<img src="https://i.postimg.cc/9XnYHdjp/Screenshot-2024-05-29-at-8-13-26-PM.png" alt="Tasky App" border="0"><br><br>
 
 <h2>What I Learned From This Project:</h2>
 <p>This project took me quite some time to get to a place where I was happy with a working product.
