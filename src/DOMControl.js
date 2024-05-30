@@ -9,8 +9,6 @@ import editIcon from "./assets/edit.svg";
 
 // checkWhiteIcon.src = checkWhiteIcon;
 // checkIcon.src = checkIcon;
-// deleteIcon.src = deleteIcon;
-// editIcon.src = editIcon;
 
 // Set active project to default project innitially
 let activeProject = projectModule.projects[0];
